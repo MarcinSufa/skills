@@ -2,6 +2,13 @@
 
 **Code review whose depth follows the risk of the change.** Fresh-context reviewers picked by the tier, at least one from another vendor than the writer when one is installed, review it, and the report ends with how much a human still has to check.
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/risk-code-review-dark.png">
+    <img alt="Risk sets how deep the review goes, and another AI vendor does it. High risk paths get questions answered with file:line: where else the pattern lives, odd API values, what a failed request rolls back to, and whether config flags are read. Example review of a high risk PR: writer Claude or GPT, reviewer the other vendor, findings P0 90 (fix round), P1 60 and P2 35 (PR body), round 2 has no P0 and is ready for QA." src="assets/risk-code-review-light.png" width="880">
+  </picture>
+</p>
+
 ```
 @review 3241              # a PR number or URL
 @review feat/my-branch    # a branch, diffed against its base

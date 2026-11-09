@@ -2,6 +2,13 @@
 
 **Tests a change that reads a feature flag or config setting across every flag profile and every moment the code reads it, in any repo.**
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/flag-matrix-dark.png">
+    <img alt="Each change gets its own matrix from the flags its code reads: catalog the repo's flags, pick the ones the changed code reads, build one profile per combination, run every profile through every moment (red on the base first), and send unreachable cells to QA. Example: one flag read on customer or project gives 3 profiles by 5 moments, 15 of 15 cells pass." src="assets/flag-matrix-light.png" width="880">
+  </picture>
+</p>
+
 | | |
 | --- | --- |
 | **Fires** | when the change touches code that reads a flag or setting, when someone asks "does X work on dev / staging / prod", and to build the repo's flag catalog |
