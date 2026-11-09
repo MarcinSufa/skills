@@ -13,7 +13,7 @@
 | **Fires** | when you type `@start <task>`; the later stages start themselves |
 | **First use** | asks once for conductor, worker and reviewer models (from the CLIs it finds) and a default strategy, saved in your roster file; `@start setup` asks again |
 | **Strategies** | solo, fan-out (parallel workers), consensus (three models, two rounds, then the conductor decides), review (an existing PR by risk tier) |
-| **First output** | four one-line answers and your prompt rewritten, before any tool call |
+| **First output** | four one-line answers and your prompt rewritten, before any tool call (the team setup comes right after) |
 | **Stops for you** | the setup and clarify answers, a cost gate, and approval to commit or push |
 | **Never** | builds a parallel fix when someone else's branch or PR already covers the ticket, or routes around a blocking hook |
 
@@ -25,11 +25,11 @@ A short request leaves out what an expert would do anyway: start from the raw ma
 
 ```mermaid
 flowchart TD
-  IN(["@start task"]) --> S0{"<b>0 · Team</b><br/>saved in roster?"}
+  IN(["@start task"]) --> S1["<b>1 · Sharpen</b><br/>expert extras, raw material,<br/>tools, outside proof;<br/>prompt rewritten"]
+  S1 --> S0{"<b>0 · Team</b><br/>saved in roster?"}
   S0 -- no --> T["detect CLIs, ask once:<br/>conductor, worker,<br/>reviewer, strategy"]
-  T --> S1
-  S0 -- yes --> S1["<b>1 · Sharpen</b><br/>expert extras, raw material,<br/>tools, outside proof;<br/>prompt rewritten"]
-  S1 --> S2{"<b>2 · Clarify</b><br/>open questions?"}
+  T --> S2
+  S0 -- yes --> S2{"<b>2 · Clarify</b><br/>open questions?"}
   S2 -- yes --> Q["One coded questionnaire,<br/>max 5 items, wait"]
   Q --> S3
   S2 -- no --> S3["<b>3 · Implement</b><br/>check nobody else is on it,<br/>worktree, worker + reviewer"]
@@ -45,7 +45,7 @@ flowchart TD
   class S0,S2 ask
 ```
 
-0. **Team and strategy.** Read once from the roster file your `CLAUDE.md` points to (the one `risk-code-review` reads). Missing: the skill checks which of `claude`, `codex`, `gemini`, `grok`, `cursor-agent` run, asks you to pick the conductor, worker, reviewer and default strategy, and writes a `## Team and strategy` table there. A task can override the strategy with `--fan-out`, `--consensus` or `--review`.
+0. **Team and strategy** (right after sharpen's first output). Read once from the roster file your `CLAUDE.md` points to (the one `risk-code-review` reads). Missing: the skill checks which of `claude`, `codex`, `gemini`, `grok`, `cursor-agent` run, asks you to pick the conductor, worker, reviewer and default strategy, and writes a `## Team and strategy` table there. A task can override the strategy with `--fan-out`, `--consensus` or `--review`.
 1. **Sharpen.** Four answers: what a top expert would add, the rawest material they would start from, their tools beyond reasoning, and what outside the model shows the result is right. For a bug, each thing the reporter saw becomes an assertion with its expected value from the reporter's material, not from the code.
 2. **Clarify.** Open architecture or product questions, or scope growth, go into one coded questionnaire through the `grilling` skill. Nothing open: no question.
 3. **Implement.** First `git fetch`, then search every remote's commit messages, branch names and PRs for the ticket; someone else's work stops the run. Substantive work goes to `worktree` and `conduct` with your team: the worker writes, the conductor briefs and adjudicates, and the reviewer is never the worker's vendor. A trivial single-file edit is written directly.
