@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"${CONDUCT_SKILL_DIR:-$HOME/.claude/skills/conduct}/scripts/conductor-guard.mjs\"; [ -f \"$f\" ] || { echo \"conductor-guard missing at $f; set CONDUCT_SKILL_DIR to the conduct skill directory\" >&2; exit 2; }; node \"$f\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

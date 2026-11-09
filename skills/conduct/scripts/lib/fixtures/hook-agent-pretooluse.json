@@ -1,0 +1,21 @@
+{
+  "session_id": "a4b0831d-0c3a-4bc6-aa5c-738fe5cb3191",
+  "transcript_path": "<HOME>\\.claude\\projects\\<HOME_SLUG>-projects-demo\\a4b0831d-0c3a-4bc6-aa5c-738fe5cb3191.jsonl",
+  "cwd": "C:\\tmp",
+  "scratchpad_dir": "<HOME>\\AppData\\Local\\Temp\\claude\\<HOME_SLUG>-projects-demo\\a4b0831d-0c3a-4bc6-aa5c-738fe5cb3191\\scratchpad",
+  "prompt_id": "c845dc63-db45-4c3b-b3b5-e103df746d26",
+  "permission_mode": "auto",
+  "effort": {
+    "level": "medium"
+  },
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Agent",
+  "tool_input": {
+    "description": "<REDACTED>",
+    "prompt": "<REDACTED>",
+    "subagent_type": "general-purpose",
+    "model": "haiku",
+    "run_in_background": true
+  },
+  "tool_use_id": "toolu_017T2dKFHoYfDYwuGMDoyGq6"
+}

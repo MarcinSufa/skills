@@ -10,7 +10,7 @@
 <p align="center">
   <a href="https://github.com/MarcinSufa/skills/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/MarcinSufa/skills/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
-  <img alt="9 skills" src="https://img.shields.io/badge/skills-9-orange.svg">
+  <img alt="11 skills" src="https://img.shields.io/badge/skills-11-orange.svg">
 </p>
 
 Agent skills for Claude Code (they also work in other agents that read `SKILL.md` folders). Each skill folder has a `README.md` for people and a `SKILL.md` for the agent. Upstream skills credit their authors; "own" means written here.
@@ -27,9 +27,11 @@ Agent skills for Claude Code (they also work in other agents that read `SKILL.md
 
 | Skill | What it does | Upstream |
 | --- | --- | --- |
+| [conduct](skills/conduct/README.md) | Multi-model orchestration: the driving session briefs and adjudicates, workers from several vendors implement and review | own |
 | [supply-chain-guard](skills/supply-chain-guard/README.md) | Release cooldown for package managers plus a hook that diffs what an install would add | own |
 | [bigfile-guard](skills/bigfile-guard/README.md) | Flags staged text files over about 5000 tokens that are new or grew, so agents can read files whole | own |
 | [i-have-adhd](skills/i-have-adhd/README.md) | Answers shaped for an ADHD reader: next action first, numbered steps, no filler | adapted from ayghri (MIT) |
+| [promote-lessons](skills/promote-lessons/README.md) | Turns queued corrections into guard-hook rules and skill edits, each approved and tested | own |
 
 ### Before the merge
 
