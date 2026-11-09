@@ -270,9 +270,10 @@
   .slide--photo .title-grid { position: relative; }
   .slide--photo .frame { border-color: rgba(255,255,255,.7); border-width: 2px; }
   @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --bg: #0f1115; --surface: #181b21; --border: #2a2f37; --border-bright: #6b7380; --text: #eef0f3; --text-dim: #a3aab4; --accent: #ff7a45; --accent-dim: rgba(255,122,69,.14); --ok: #6cc492; --risk: #f57fa2; } .chat { border: 1px solid var(--border-bright); } }
-  .groups { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 2vw, 32px); margin-top: clamp(20px, 3.5vh, 40px); }
+  .groups { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(16px, 2vw, 32px); margin-top: clamp(20px, 3.5vh, 40px); }
   .groups > div { display: grid; gap: 12px; align-content: start; }
   .groups .tile b { font-size: clamp(20px, 1.6vw, 26px); }
+  [data-figure="skills"] .slide__heading { max-width: none; }
 </style>
 </head>
 <body>
@@ -351,7 +352,7 @@
 
   <section class="slide" data-figure="skills">
     <p class="slide__label">skills</p>
-    <h2 class="slide__heading">Nine agent skills that make the agent check its own work</h2>
+    <h2 class="slide__heading">Agent skills that make the agent check its own work</h2>
     <div class="groups">
       <div>
         <p class="case__trigger">Before the work</p>
@@ -364,12 +365,17 @@
         <div class="tile"><b>supply-chain-guard</b><span>7-day cooldown, install diffs reviewed</span></div>
         <div class="tile"><b>bigfile-guard</b><span>big files may stay, not grow</span></div>
         <div class="tile"><b>i-have-adhd</b><span>answers that start with the next action</span></div>
+        <div class="tile"><b>conduct</b><span>models from several vendors implement and review</span></div>
       </div>
       <div>
         <p class="case__trigger">Before the merge</p>
         <div class="tile tile--key"><b>risk-code-review</b><span>review depth and reviewers set by risk</span></div>
         <div class="tile"><b>flag-matrix</b><span>every flag profile through every moment</span></div>
         <div class="tile"><b>explain-gate</b><span>the PR's explanation checked against its diff</span></div>
+      </div>
+      <div>
+        <p class="case__trigger">After the merge</p>
+        <div class="tile"><b>promote-lessons</b><span>corrections become guard rules and skill edits</span></div>
       </div>
     </div>
   </section>

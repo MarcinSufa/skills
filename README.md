@@ -3,14 +3,14 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/skills-dark.png">
-    <img alt="Nine agent skills that make the agent check its own work. Before the work: start, worktree, verify-env. While it works: supply-chain-guard, bigfile-guard, i-have-adhd. Before the merge: risk-code-review, flag-matrix, explain-gate." src="docs/assets/skills-light.png" width="880">
+    <img alt="Agent skills that make the agent check its own work. Before the work: start, worktree, verify-env. While it works: supply-chain-guard, bigfile-guard, i-have-adhd, conduct. Before the merge: risk-code-review, flag-matrix, explain-gate. After the merge: promote-lessons." src="docs/assets/skills-light.png" width="880">
   </picture>
 </p>
 
 <p align="center">
   <a href="https://github.com/MarcinSufa/skills/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/MarcinSufa/skills/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
-  <img alt="11 skills" src="https://img.shields.io/badge/skills-11-orange.svg">
+  <a href="https://github.com/MarcinSufa/skills/tags"><img alt="Version" src="https://img.shields.io/github/v/tag/MarcinSufa/skills?label=version&sort=semver"></a>
 </p>
 
 Agent skills for Claude Code (they also work in other agents that read `SKILL.md` folders). Each skill folder has a `README.md` for people and a `SKILL.md` for the agent. Upstream skills credit their authors; "own" means written here.
@@ -31,7 +31,6 @@ Agent skills for Claude Code (they also work in other agents that read `SKILL.md
 | [supply-chain-guard](skills/supply-chain-guard/README.md) | Release cooldown for package managers plus a hook that diffs what an install would add | own |
 | [bigfile-guard](skills/bigfile-guard/README.md) | Flags staged text files over about 5000 tokens that are new or grew, so agents can read files whole | own |
 | [i-have-adhd](skills/i-have-adhd/README.md) | Answers shaped for an ADHD reader: next action first, numbered steps, no filler | adapted from ayghri (MIT) |
-| [promote-lessons](skills/promote-lessons/README.md) | Turns queued corrections into guard-hook rules and skill edits, each approved and tested | own |
 
 ### Before the merge
 
@@ -40,6 +39,12 @@ Agent skills for Claude Code (they also work in other agents that read `SKILL.md
 | [risk-code-review](skills/risk-code-review/README.md) | Code review whose depth and reviewers follow the risk of the change | own |
 | [flag-matrix](skills/flag-matrix/README.md) | Tests a change that reads a flag or config setting across every flag profile and read moment | own |
 | [explain-gate](skills/explain-gate/README.md) | Checks a PR's What / Why / Risk explanation against its diff | own |
+
+### After the merge
+
+| Skill | What it does | Upstream |
+| --- | --- | --- |
+| [promote-lessons](skills/promote-lessons/README.md) | Turns queued corrections into guard-hook rules and skill edits, each approved and tested | own |
 
 ## Also recommended
 
