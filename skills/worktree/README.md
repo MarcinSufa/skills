@@ -30,7 +30,7 @@ Several agent sessions in one checkout overwrite each other's branch, stash and 
 
 ```mermaid
 flowchart LR
-  A["<b>1 · Create</b><br/>git worktree add<br/>root/slug -b branch"] --> B["<b>2 · Work by path</b><br/>absolute paths,<br/>cd tree && cmd"]
+  A["<b>1 · Create</b><br/>git worktree add<br/>root/slug -b branch<br/>origin/HEAD"] --> B["<b>2 · Work by path</b><br/>absolute paths,<br/>cd tree && cmd"]
   B --> C["<b>3 · Ship</b><br/>commit, push<br/>from the tree"]
   C --> D{"PR merged, closed<br/>or abandoned?"}
   D -- yes --> R(["git worktree remove"])
