@@ -1,0 +1,9 @@
+{
+  "name": "supply-chain-guard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "bench": "node test/bench.mjs --runs 3"
+  }
+}

@@ -1,0 +1,4 @@
+.exovault/
+node_modules/
+__pycache__/
+tools/*/out/

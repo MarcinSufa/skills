@@ -1,0 +1,3 @@
+.exovault/
+node_modules/
+bench*.json
