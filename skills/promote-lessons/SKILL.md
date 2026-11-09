@@ -1,6 +1,6 @@
 ---
 name: promote-lessons
-description: Curator for a self-improving guardrail pipeline. Scans recent corrections and incidents, classifies each lesson (mechanically checkable: a guard-hook rule delta; procedural: a skill or CLAUDE.md delta), proposes itemized DeltaPatches, gets explicit human approval via AskUserQuestion, applies the deltas, and records each approved rule with a link to its incident. Use when asked to "promote lessons", "curate corrections", "turn incidents into rules", or as a periodic curation pass.
+description: 'Curator for a self-improving guardrail pipeline. Scans recent corrections and incidents, classifies each lesson (mechanically checkable: a guard-hook rule delta; procedural: a skill or CLAUDE.md delta), proposes itemized DeltaPatches, gets explicit human approval via AskUserQuestion, applies the deltas, and records each approved rule with a link to its incident. Use when asked to "promote lessons", "curate corrections", "turn incidents into rules", or as a periodic curation pass.'
 ---
 
 # /promote-lessons: lesson curator

@@ -53,7 +53,14 @@ Also by the same author: [claude-prompt-ab](https://github.com/MarcinSufa/claude
 
 ## Install
 
-Copy the skills you want into `~/.claude/skills/` (all projects) or `<repo>/.claude/skills/` (one project):
+As a Claude Code plugin (all skills, updated with `/plugin update`):
+
+```text
+/plugin marketplace add MarcinSufa/skills
+/plugin install marcinsufa-skills@marcinsufa
+```
+
+Or copy the skills you want into `~/.claude/skills/` (all projects) or `<repo>/.claude/skills/` (one project):
 
 ```bash
 git clone https://github.com/MarcinSufa/skills
@@ -67,6 +74,10 @@ Some skills also ship hooks or scripts; their README says how to turn them on. N
 ```bash
 node --test $(find . -type f -name '*.test.mjs')
 ```
+
+## Versions
+
+The plugin version lives in `.claude-plugin/plugin.json`. A pull request that changes anything under `skills/` raises it (CI checks), and every new version on `main` gets a `v<version>` tag.
 
 ## License
 

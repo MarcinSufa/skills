@@ -1,0 +1,16 @@
+{
+  "name": "marcinsufa",
+  "owner": {
+    "name": "Marcin Sufa",
+    "url": "https://github.com/MarcinSufa"
+  },
+  "description": "Agent skills for review, testing and safety, as an installable Claude Code plugin.",
+  "plugins": [
+    {
+      "name": "marcinsufa-skills",
+      "source": "./",
+      "description": "Risk-tiered code review, flag x moment matrix, supply-chain and big-file guards, worktrees, and an @start pipeline.",
+      "category": "engineering"
+    }
+  ]
+}
