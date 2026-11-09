@@ -45,8 +45,8 @@ flowchart TD
   class S0,S2 ask
 ```
 
-0. **Team and strategy** (right after sharpen's first output). Read once from the roster file your `CLAUDE.md` points to (the one `risk-code-review` reads). Missing: the skill checks which of `claude`, `codex`, `gemini`, `grok`, `cursor-agent` run, asks you to pick the conductor, worker, reviewer and default strategy, and writes a `## Team and strategy` table there. A task can override the strategy with `--fan-out`, `--consensus` or `--review`.
 1. **Sharpen.** Four answers: what a top expert would add, the rawest material they would start from, their tools beyond reasoning, and what outside the model shows the result is right. For a bug, each thing the reporter saw becomes an assertion with its expected value from the reporter's material, not from the code.
+0. **Team and strategy** (right after sharpen's first output). Read once from the roster file your `CLAUDE.md` points to (the one `risk-code-review` reads). Missing: the skill checks which of `claude`, `codex`, `gemini`, `grok`, `cursor-agent` run, asks you to pick the conductor, worker, reviewer and default strategy, and writes a `## Team and strategy` table there. A task can override the strategy with `--fan-out`, `--consensus` or `--review`.
 2. **Clarify.** Open architecture or product questions, or scope growth, go into one coded questionnaire through the `grilling` skill. Nothing open: no question.
 3. **Implement.** First `git fetch`, then search every remote's commit messages, branch names and PRs for the ticket; someone else's work stops the run. Substantive work goes to `worktree` and `conduct` with your team: the worker writes, the conductor briefs and adjudicates, and the reviewer is never the worker's vendor. A trivial single-file edit is written directly.
 4. **Gates.** Hooks run on their own; a block is reported.
