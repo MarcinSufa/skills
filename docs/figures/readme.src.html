@@ -270,6 +270,9 @@
   .slide--photo .title-grid { position: relative; }
   .slide--photo .frame { border-color: rgba(255,255,255,.7); border-width: 2px; }
   @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --bg: #0f1115; --surface: #181b21; --border: #2a2f37; --border-bright: #6b7380; --text: #eef0f3; --text-dim: #a3aab4; --accent: #ff7a45; --accent-dim: rgba(255,122,69,.14); --ok: #6cc492; --risk: #f57fa2; } .chat { border: 1px solid var(--border-bright); } }
+  .groups { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 2vw, 32px); margin-top: clamp(20px, 3.5vh, 40px); }
+  .groups > div { display: grid; gap: 12px; align-content: start; }
+  .groups .tile b { font-size: clamp(20px, 1.6vw, 26px); }
 </style>
 </head>
 <body>
@@ -342,6 +345,239 @@
           <use href="#ok" y="280"/><use href="#ok" x="150" y="280"/><use href="#ok" x="300" y="280"/>
         </svg>
         <figcaption>Example run: the code read one flag, price view, set on customer or project, so 3 profiles: the default and each override; 15 of 15 cells pass.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="skills">
+    <p class="slide__label">skills</p>
+    <h2 class="slide__heading">Nine agent skills that make the agent check its own work</h2>
+    <div class="groups">
+      <div>
+        <p class="case__trigger">Before the work</p>
+        <div class="tile tile--key"><b>start</b><span>one command: sharpen, clarify, implement, gates, review</span></div>
+        <div class="tile"><b>worktree</b><span>own git worktree per task</span></div>
+        <div class="tile"><b>verify-env</b><span>read-only doctor for the host</span></div>
+      </div>
+      <div>
+        <p class="case__trigger">While it works</p>
+        <div class="tile"><b>supply-chain-guard</b><span>7-day cooldown, install diffs reviewed</span></div>
+        <div class="tile"><b>bigfile-guard</b><span>big files may stay, not grow</span></div>
+        <div class="tile"><b>i-have-adhd</b><span>answers that start with the next action</span></div>
+      </div>
+      <div>
+        <p class="case__trigger">Before the merge</p>
+        <div class="tile tile--key"><b>risk-code-review</b><span>review depth and reviewers set by risk</span></div>
+        <div class="tile"><b>flag-matrix</b><span>every flag profile through every moment</span></div>
+        <div class="tile"><b>explain-gate</b><span>the PR's explanation checked against its diff</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="bigfile-guard">
+    <div class="split split--even split--review">
+      <div>
+        <p class="slide__label">bigfile-guard</p>
+        <h2 class="slide__heading">Big files may stay, but a commit cannot make them bigger</h2>
+        <ul class="points">
+          <li><b>Reports</b> staged text files over about 5000 tokens that are new or grew</li>
+          <li><b>Skips</b> binaries, lockfiles, minified, vendored and generated files, and files that shrink</li>
+          <li><b>Warns</b> by default; blocks with <span class="mono">bigfile.mode block</span> or <span class="mono">BIGFILE_MODE=block</span></li>
+          <li><b>Never</b> stops a commit because the guard itself broke</li>
+        </ul>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>$</b>git commit -m "add notes"</p>
+          <p class="chat__head">bigfile-guard · mode=warn</p>
+          <dl class="chat__kv">
+            <dt>NEW</dt><dd>notes.md · ~7800 tok</dd>
+            <dt>fix</dt><dd>split the file, or add a glob to .bigfile-allow if it is generated or vendored</dd>
+          </dl>
+          <p class="chat__head chat__head--go">exit 0 · the commit goes on</p>
+        </div>
+        <figcaption>Tokens are estimated as max(bytes / 4, words × 1.3). Runs as a git pre-commit hook, and optionally as a Claude Code hook on git commit.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="explain-gate">
+    <div class="split split--even split--matrix">
+      <div>
+        <p class="slide__label">explain-gate</p>
+        <h2 class="slide__heading">The PR's own explanation, checked against its diff</h2>
+        <ol class="stepper">
+          <li>Find "## Explanation"<small>What / Why / Risk; none found: no_section</small></li>
+          <li>Rules<small>files, symbols and numbers it names; big changes it never names; Risk "none" on a risky diff</small></li>
+          <li>Model read, optional<small>codex in a read-only sandbox; skip with --no-model</small></li>
+          <li>Verdict<small>mismatch, ok or not checked; exit 0 on every path</small></li>
+        </ol>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>explain-check</b>PR #57</p>
+          <dl class="chat__kv">
+            <dt>What</dt><dd>"renames parseConfig to loadConfig"</dd>
+            <dt>Risk</dt><dd>"none"</dd>
+          </dl>
+          <p class="chat__head">Findings</p>
+          <ol class="chat__q">
+            <li><b>symbol</b>loadConfig does not appear in the diff</li>
+            <li><b>risk</b>"none", but the diff changes a pre-commit hook</li>
+          </ol>
+          <p class="chat__head chat__head--go">mismatch · 2 claims to check by hand</p>
+        </div>
+        <figcaption>Shortened example. A finding is a claim to verify, not a fact, and the gate never blocks.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="i-have-adhd">
+    <div class="split split--even split--review">
+      <div>
+        <p class="slide__label">i-have-adhd</p>
+        <h2 class="slide__heading">Answers you can act on from the first line</h2>
+        <ul class="points">
+          <li><b>Next action first</b>, one concrete next action last</li>
+          <li><b>Numbered steps</b>, one bounded action each</li>
+          <li><b>State restated</b> every turn</li>
+          <li><b>Specific time estimates</b>, not "a while"</li>
+          <li><b>No preamble</b>, recap or closer</li>
+        </ul>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__head" style="border-top:0;padding-top:0">Before</p>
+          <p>Great question! There are a few things we could look at here. First, some background on how the auth flow works...</p>
+          <p class="chat__head chat__head--go">After</p>
+          <p class="chat__rewrite">Run npm install jsonwebtoken, then edit src/auth.ts:42.</p>
+          <p>Step 3 of 5 done: schema updated. Next: backfill.</p>
+          <p>About 15 minutes if tests cover this. An afternoon if not.</p>
+        </div>
+        <figcaption>10 output rules and a pre-send check. Adapted from ayghri/i-have-adhd (MIT).</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="start">
+    <div class="split split--even split--matrix">
+      <div>
+        <p class="slide__label">start</p>
+        <h2 class="slide__heading">One command runs the whole task</h2>
+        <ol class="stepper">
+          <li>Sharpen<small>what an expert would add; the prompt rewritten</small></li>
+          <li>Clarify<small>open questions asked once, max 5</small></li>
+          <li>Implement<small>nobody else on it? then a worktree</small></li>
+          <li>Gates<small>hooks block, never bypassed</small></li>
+          <li>Verify and review<small>evidence, flag-matrix, risk-code-review</small></li>
+          <li>Lessons<small>corrections queued</small></li>
+        </ol>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>@start</b>fix the duplicate toast after saving an order</p>
+          <p class="chat__head">First output, before any tool call</p>
+          <dl class="chat__kv">
+            <dt>expert</dt><dd>reproduce the double save first</dd>
+            <dt>material</dt><dd>the save handler and the toast call</dd>
+            <dt>tools</dt><dd>an e2e test of the save</dd>
+            <dt>proof</dt><dd>the test red on main, green on the fix</dd>
+          </dl>
+          <p class="chat__rewrite">Find why saving shows the toast twice, prove it with an e2e test that fails on main, fix the root cause.</p>
+          <p class="chat__head chat__head--go">stops for you: clarify · cost gate · commit and push</p>
+        </div>
+        <figcaption>Shortened example. A stage whose skill is not installed is skipped.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="supply-chain-guard">
+    <div class="split split--even split--matrix">
+      <div>
+        <p class="slide__label">supply-chain-guard</p>
+        <h2 class="slide__heading">Fresh releases wait 7 days, and what an agent installs gets a diff review</h2>
+        <ol class="stepper">
+          <li>Parse the command<small>chains, wrappers, sh -c; installs nothing: exits in about 30 ms</small></li>
+          <li>Fetch both versions<small>installed vs what the command would install</small></li>
+          <li>Signals<small>diff scan, OSV, release age; a block floor denies</small></li>
+          <li>Claude review<small>claude -p with no tools, sees only the diff</small></li>
+          <li>Verdict<small>the stricter of floor and review; an error asks</small></li>
+        </ol>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>$</b>npm i example-lib@2.4.1</p>
+          <dl class="chat__kv">
+            <dt>installed</dt><dd>2.4.0</dd>
+            <dt>requested</dt><dd>2.4.1, released 2 days ago</dd>
+            <dt>diff</dt><dd>what changed between the two, scanned and reviewed</dd>
+          </dl>
+          <p class="chat__head">Signals</p>
+          <ol class="chat__q">
+            <li><b>ask</b>fresh-release: younger than the 7-day cooldown</li>
+          </ol>
+          <p class="chat__head chat__head--go">ask · you decide in the permission prompt</p>
+        </div>
+        <figcaption>Shortened example. The hook never grants permission: allow leaves your normal rules in charge. The cooldown is set in npm, pnpm, yarn, bun and uv.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="verify-env">
+    <div class="split split--even split--review">
+      <div>
+        <p class="slide__label">verify-env</p>
+        <h2 class="slide__heading">Find the missing tool before the long run, not halfway through</h2>
+        <ul class="points">
+          <li><b>Tools</b>: node, git, npm, pnpm, gh, codex, claude, plus what a repo profile adds</li>
+          <li><b>Session</b>: gh auth, shims on PATH, disk, ports, Playwright Chromium</li>
+          <li><b>Read-only</b>: never installs, writes or edits PATH</li>
+          <li><b>Exit code</b>: 0 ok, 1 a failure, 2 only warnings</li>
+        </ul>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>$</b>node verify-env.mjs</p>
+          <dl class="chat__kv">
+            <dt>OK</dt><dd>tool:node · node 24.16.0</dd>
+            <dt>OK</dt><dd>tool:git · git 2.45.1</dd>
+            <dt>OK</dt><dd>tool:pnpm · pnpm 11.5.2</dd>
+            <dt>WARN</dt><dd>tool:npm · npm not on PATH</dd>
+            <dt>OK</dt><dd>tool:gh · gh 2.86.0</dd>
+            <dt>OK</dt><dd>tool:codex · codex 0.162.1</dd>
+          </dl>
+          <p class="chat__head chat__head--go">one line per check · --json for agents</p>
+        </div>
+        <figcaption>Shortened example. On one host the profile caught npm missing from PATH, gh resolving past its shim, and a sandbox restriction that breaks Chromium.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="worktree">
+    <div class="split split--even split--matrix">
+      <div>
+        <p class="slide__label">worktree</p>
+        <h2 class="slide__heading">Each task gets its own worktree, so sessions stop overwriting each other</h2>
+        <ol class="stepper">
+          <li>Create<small>git worktree add root/slug -b branch, off the default branch</small></li>
+          <li>Work by path<small>absolute paths, cd "tree" &amp;&amp; cmd</small></li>
+          <li>Ship<small>commit and push from the tree</small></li>
+          <li>Keep or remove<small>removed once the PR is merged, closed or abandoned</small></li>
+        </ol>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>task</b>fix the login redirect bug</p>
+          <dl class="chat__kv">
+            <dt>tree</dt><dd>root/login-redirect</dd>
+            <dt>branch</dt><dd>fix/login-redirect</dd>
+            <dt>checkout</dt><dd>untouched: other sessions keep their branch, stash and dev server</dd>
+          </dl>
+          <p class="chat__head">Exempt</p>
+          <p>conversation, read-only investigation, review only, a trivial edit asked for in place</p>
+          <p class="chat__head chat__head--go">never switches the session: no approval prompt to stall on</p>
+        </div>
+        <figcaption>Shortened example. The worktree root is set per machine.</figcaption>
       </figure>
     </div>
   </section>

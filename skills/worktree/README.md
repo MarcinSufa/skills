@@ -2,6 +2,13 @@
 
 **Before the first file edit of a real task in a shared checkout, the agent creates its own git worktree, works there, and says when to keep or remove it.**
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/worktree-dark.png">
+    <img alt="Each task gets its own worktree, so sessions stop overwriting each other: create it off the default branch, work by absolute path, commit and push from the tree, remove it once the PR is merged, closed or abandoned. Example: fix the login redirect bug gets its own tree and branch, the shared checkout stays untouched." src="assets/worktree-light.png" width="880">
+  </picture>
+</p>
+
 > The worktree root differs per machine; this repo keeps it in `hosts/<host>.md`. Set your own root and pruning in your global `CLAUDE.md` or the skill.
 
 ```

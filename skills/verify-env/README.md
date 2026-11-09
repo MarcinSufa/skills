@@ -2,6 +2,13 @@
 
 **A read-only doctor that tells you, before a long run starts, whether this host and session can run it: tools and versions on PATH, gh auth, shims, disk, ports and Playwright Chromium.**
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/verify-env-dark.png">
+    <img alt="Find the missing tool before the long run, not halfway through: checks tools, gh auth, shims on PATH, disk, ports and Playwright Chromium, read-only, exit 0 ok, 1 a failure, 2 only warnings. Example output: OK for node, git, pnpm, gh and codex, WARN npm not on PATH." src="assets/verify-env-light.png" width="880">
+  </picture>
+</p>
+
 ```
 node ~/.claude/skills/verify-env/scripts/verify-env.mjs            # table
 node ~/.claude/skills/verify-env/scripts/verify-env.mjs --json     # {exit, checks:[{id,status,detail}]}
