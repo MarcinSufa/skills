@@ -2,6 +2,13 @@
 
 **One command runs a whole task: `@start <task>` sharpens the request, asks open questions once, implements in a worktree with the models you picked, runs the gates, has the result reviewed by another vendor, and queues the lessons.**
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/start-dark.png">
+    <img alt="One command runs the whole task: sharpen, clarify, implement, gates, verify and review, lessons. Example: @start fix the duplicate toast after saving an order; the first output names what an expert would add, the raw material, the tools and the outside proof, then rewrites the prompt; it stops for the clarify answer, a cost gate, and commit and push." src="assets/start-light.png" width="880">
+  </picture>
+</p>
+
 > A pipeline made of other skills: [`grilling`](https://github.com/mattpocock/skills) (mattpocock, MIT), [`worktree`](../worktree/README.md), [`conduct`](../conduct/README.md), [`flag-matrix`](../flag-matrix/README.md), [`risk-code-review`](../risk-code-review/README.md), [`promote-lessons`](../promote-lessons/README.md) and `superpowers:verification-before-completion` ([obra/superpowers](https://github.com/obra/superpowers)). A stage whose skill is missing runs a simpler fallback and says so.
 
 ```

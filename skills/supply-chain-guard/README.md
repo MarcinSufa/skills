@@ -2,6 +2,13 @@
 
 **Stops a trojaned package or editor extension before it lands: a 7-day release cooldown in your package managers, plus a hook that diffs what a Bash command would install against what you have and lets Claude judge only that diff.**
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/supply-chain-guard-dark.png">
+    <img alt="Fresh releases wait 7 days, and a named npm or PyPI package gets a diff review: parse the command, fetch the installed and requested versions, compute signals (diff scan, OSV, release age), a Claude review of only the diff, and a verdict that is the stricter of floor and review. Example: npm i example-lib@2.4.1 over 2.4.0, released 2 days ago, gets ask because it is younger than the cooldown." src="assets/supply-chain-guard-light.png" width="880">
+  </picture>
+</p>
+
 ```
 # the hook fires on its own, before every Bash or PowerShell tool call
 npm i axios@1.7.9

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>skills: README figures</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23111111'/%3E%3Cpath d='M18 44V20h16a8 8 0 0 1 0 16H18' fill='none' stroke='%23ff6e50' stroke-width='5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light dark;
+    --font-display: 'Manrope', 'Segoe UI', sans-serif;
+    --font-body: 'Manrope', 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --bg: #fbfbf9; --surface: #f1f0ec; --border: #e2e0da; --border-bright: #8c8a85;
+    --text: #111111; --text-dim: #5a5853; --accent: #cc3418; --accent-dim: rgba(204,52,24,.12);
+    --ok: #1d7443; --risk: #a01d48;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f0f0f; --surface: #1a1a19; --border: #2b2a28; --border-bright: #696763;
+      --text: #f2f0eb; --text-dim: #a4a19b; --accent: #ff6e50; --accent-dim: rgba(255,110,80,.14);
+      --ok: #6cc492; --risk: #f57fa2;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--font-body); color: var(--text); background: var(--bg); overflow: hidden; -webkit-font-smoothing: antialiased; }
+  ::selection { background: var(--accent-dim); }
+
+  .deck { height: 100dvh; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  .slide {
+    height: 100dvh; scroll-snap-align: start; overflow: hidden; position: relative; isolation: isolate;
+    display: flex; flex-direction: column; justify-content: center; gap: clamp(16px, 2.5vh, 28px);
+    padding: clamp(40px, 7vh, 88px) clamp(32px, 8vw, 128px);
+    transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+  }
+  .js .slide { opacity: 0; transform: translateY(32px); }
+  .slide.visible { opacity: 1; transform: none; }
+  .js .slide .reveal { opacity: 0; transform: translateY(12px); transition: opacity .5s, transform .5s; }
+  .slide.visible .reveal { opacity: 1; transform: none; }
+  .slide.visible .reveal:nth-child(2) { transition-delay: .08s; }
+  .slide.visible .reveal:nth-child(3) { transition-delay: .16s; }
+  .slide.visible .reveal:nth-child(4) { transition-delay: .24s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .deck { scroll-behavior: auto; }
+    .slide, .slide .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .slide[data-slide-check] { outline: 4px solid var(--risk); outline-offset: -4px; }
+    .slide[data-slide-check="auto-fit"] { outline-color: var(--accent); }
+    .slide[data-slide-check]::after {
+      content: attr(data-slide-check-label); position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+      z-index: 20; padding: 6px 10px; border-radius: 4px; color: var(--bg); background: var(--risk); font: 600 12px/1.2 var(--font-mono); pointer-events: none;
+    }
+    .slide[data-slide-check="auto-fit"]::after { background: var(--accent); }
+  }
+
+  .deck-progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--accent); z-index: 100; transition: width .3s; pointer-events: none; }
+  .deck-dots {
+    position: fixed; right: clamp(12px, 2vw, 24px); top: 50%; transform: translateY(-50%); z-index: 100;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px; padding: 6px; width: 32px;
+    max-height: min(70dvh, 560px); overflow-y: auto; border-radius: 10px;
+    background: color-mix(in srgb, var(--bg) 70%, transparent); backdrop-filter: blur(6px); transition: width .2s;
+  }
+  .deck-dots:hover, .deck-dots:focus-within { align-items: stretch; width: min(260px, calc(100vw - 32px)); border: 1px solid var(--border); }
+  .deck-dot {
+    display: grid; grid-template-columns: 8px minmax(0,1fr); align-items: center; gap: 0; width: 20px; min-height: 24px;
+    padding: 6px; border: 0; border-radius: 4px; background: transparent; color: var(--text-dim);
+    font: 500 12px/1.2 var(--font-mono); text-align: left; cursor: pointer;
+  }
+  .deck-dot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .55; justify-self: center; }
+  .deck-dot-label { max-width: 0; overflow: hidden; opacity: 0; white-space: nowrap; text-overflow: ellipsis; transition: max-width .2s, opacity .2s; }
+  .deck-dots:hover .deck-dot, .deck-dots:focus-within .deck-dot { gap: 10px; width: 100%; }
+  .deck-dots:hover .deck-dot-label, .deck-dots:focus-within .deck-dot-label { max-width: 200px; opacity: 1; }
+  .deck-dot:hover { color: var(--text); }
+  .deck-dot[aria-current="true"] { color: var(--accent); }
+  .deck-dot[aria-current="true"]::before { opacity: 1; transform: scale(1.4); }
+  .deck-dot:focus-visible, .deck-panel__button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .deck-counter, .deck-hints { position: fixed; bottom: clamp(12px, 2vh, 24px); z-index: 100; font: 500 12px var(--font-mono); color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  .deck-counter { right: clamp(16px, 2vw, 28px); }
+  .deck-hints { left: 50%; transform: translateX(-50%); transition: opacity .5s; white-space: nowrap; }
+  .deck-hints.faded { opacity: 0; pointer-events: none; }
+  .deck-overlay { position: fixed; inset: 0; z-index: 200; display: none; place-items: center; padding: 24px; background: rgba(0,0,0,.45); backdrop-filter: blur(4px); }
+  .deck-overlay.open { display: grid; }
+  .deck-panel { width: min(560px, 86vw); max-height: 80dvh; overflow: auto; padding: 16px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); font-family: var(--font-mono); box-shadow: 0 24px 64px rgba(0,0,0,.25); }
+  .deck-panel:focus { outline: none; }
+  .deck-panel__header { margin: 2px 10px 10px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-dim); }
+  .deck-panel__button { display: flex; gap: 12px; width: 100%; padding: 8px 10px; border: 0; border-radius: 4px; background: transparent; color: inherit; font: 14px/1.3 var(--font-body); text-align: left; cursor: pointer; }
+  .deck-panel__button:hover, .deck-panel__button[aria-current="true"] { background: var(--accent-dim); color: var(--text); }
+  .deck-panel__number { min-width: 22px; font: 500 12px/1.6 var(--font-mono); color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  .deck-help-row { display: flex; justify-content: space-between; gap: 24px; padding: 7px 10px; font-size: 13px; }
+  .deck-help-row kbd { padding: 2px 8px; border: 1px solid var(--border-bright); border-radius: 4px; font: inherit; }
+
+  .slide__hero { font: 400 clamp(56px, 9vw, 132px)/.95 var(--font-display); letter-spacing: -.035em; text-wrap: balance; max-width: 14ch; }
+  .slide__heading { font: 400 clamp(32px, 4.4vw, 56px)/1.05 var(--font-display); letter-spacing: -.02em; text-wrap: balance; max-width: 30ch; }
+  .slide__body { font-size: clamp(18px, 1.8vw, 22px); line-height: 1.45; color: var(--text-dim); max-width: 46ch; text-wrap: pretty; }
+  .slide__label { font: 600 clamp(12px, 1.2vw, 14px) var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  .slide__meta { display: flex; gap: 24px; padding-top: 16px; border-top: 1px solid var(--border); font: 500 clamp(12px, 1.2vw, 14px) var(--font-mono); color: var(--text-dim); }
+  .slide--title { justify-content: flex-end; }
+  .slide--title::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; opacity: .5;
+    background-image: radial-gradient(var(--border) 1.2px, transparent 1.2px); background-size: 24px 24px;
+  }
+  .mono { font-family: var(--font-mono); font-size: .9em; }
+
+  .slide__kpis { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1px; background: var(--border); border-block: 1px solid var(--border); }
+  .kpi { background: var(--bg); padding: clamp(16px, 3vh, 32px) clamp(12px, 2vw, 28px) clamp(16px, 3vh, 32px) 0; min-width: 0; }
+  .kpi + .kpi { padding-left: clamp(12px, 2vw, 28px); }
+  .slide__kpi-val { font: 400 clamp(44px, 6vw, 80px)/1 var(--font-display); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .kpi:first-child .slide__kpi-val { font-size: clamp(72px, 11vw, 150px); color: var(--accent); letter-spacing: -.03em; }
+  .slide__kpi-val small { font: 500 .3em var(--font-mono); color: var(--text-dim); letter-spacing: 0; }
+  .slide__kpi-label { margin-top: 12px; font: 500 clamp(12px, 1.2vw, 15px)/1.4 var(--font-mono); color: var(--text-dim); max-width: 34ch; }
+  .waffle { display: grid; grid-template-columns: repeat(25, 1fr); gap: 3px; max-width: 420px; margin-top: 14px; }
+  .waffle i { aspect-ratio: 1; border-radius: 1px; border: 1px solid var(--border-bright); }
+  .waffle i.on { background: var(--accent); border-color: var(--accent); }
+
+  figure { margin: 0; }
+  figure svg { width: 100%; height: auto; max-height: 56dvh; display: block; }
+  figcaption { margin-top: 10px; font-size: clamp(16px, 1.5vw, 19px); color: var(--text-dim); max-width: 70ch; }
+  .diagram-shell { overflow-x: auto; }
+  .n-box { fill: var(--bg); stroke: var(--border-bright); stroke-width: 2; }
+  .n-key { fill: var(--accent-dim); stroke: var(--accent); stroke-width: 2.5; }
+  .n-title { font: 600 24px var(--font-body); fill: var(--text); }
+  .n-sub { font: 500 17px var(--font-mono); fill: var(--text-dim); }
+  .e-line { stroke: var(--border-bright); stroke-width: 2.5; fill: none; }
+  .e-hot { stroke: var(--accent); stroke-width: 3.5; fill: none; stroke-dasharray: 10 7; }
+  .e-label { font: 500 18px var(--font-mono); fill: var(--text-dim); paint-order: stroke; stroke: var(--bg); stroke-width: 6px; }
+  .e-label.hot { fill: var(--accent); }
+  .lane { stroke: var(--border); stroke-width: 2; }
+  .lane-label { font: 600 18px var(--font-mono); fill: var(--text-dim); letter-spacing: .06em; }
+  .ev { font: 600 22px var(--font-body); fill: var(--text); }
+  .ev.bad { fill: var(--risk); }
+  .dot { fill: var(--text); }
+  .dot.bad { fill: var(--risk); }
+  .arrowhead { fill: var(--border-bright); }
+  .arrowhead.hot { fill: var(--accent); }
+
+  .split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 4vw, 64px); align-items: center; }
+  .split--even { grid-template-columns: 1fr 1fr; align-items: start; }
+  .points { list-style: none; display: grid; gap: clamp(10px, 1.6vh, 16px); font-size: clamp(18px, 1.7vw, 21px); line-height: 1.4; max-width: 44ch; }
+  .points li { padding-left: 18px; position: relative; }
+  .points li::before { content: ''; position: absolute; left: 0; top: .6em; width: 7px; height: 7px; background: var(--accent); }
+  .points b { font-weight: 600; }
+  video { width: 100%; max-height: 62dvh; border-radius: 6px; border: 1px solid var(--border); background: #000; display: block; }
+
+  .table-scroll { overflow-x: auto; }
+  table.m { border-collapse: collapse; font-size: clamp(15px, 1.4vw, 18px); width: 100%; }
+  table.m th, table.m td { padding: 8px 12px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+  table.m th { font: 600 13px var(--font-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--text-dim); }
+  table.m td:first-child { font-family: var(--font-mono); font-size: .9em; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; font: 600 13px var(--font-mono); padding: 3px 8px; border-radius: 4px; border: 1.5px solid currentColor; }
+  .chip.ok { color: var(--ok); }
+  .chip.ok::before { content: '✓'; }
+  .chip.fail { color: var(--risk); }
+  .chip.fail::before { content: '✗'; }
+
+  .multiples { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--border); border-block: 1px solid var(--border); }
+  .case { background: var(--bg); padding: clamp(16px, 3vh, 28px) clamp(14px, 2vw, 28px); display: grid; gap: 12px; align-content: start; }
+  .case:first-child { padding-left: 0; }
+  .case__trigger { font: 600 13px var(--font-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); }
+  .case__flow { display: grid; gap: 6px; font-size: clamp(18px, 1.7vw, 21px); line-height: 1.35; }
+  .case__flow span:nth-child(2) { font: 500 15px var(--font-mono); color: var(--accent); }
+  .case__out { font-weight: 600; }
+  .case__tool { font: 500 14px var(--font-mono); color: var(--text-dim); }
+
+  .files { list-style: none; display: grid; gap: 10px; }
+  .files li { display: grid; gap: 2px; }
+  .files code { font: 600 clamp(14px, 1.3vw, 17px) var(--font-mono); overflow-wrap: anywhere; }
+  .files span { font-size: clamp(16px, 1.5vw, 18px); color: var(--text-dim); }
+  .panel-title { font: 600 13px var(--font-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); margin-bottom: 14px; }
+  .ask { font: 400 clamp(26px, 3vw, 38px)/1.15 var(--font-display); max-width: 40ch; }
+
+  .slide--title:has(.title-grid) { justify-content: center; }
+  .split .points, .split .stepper { margin-top: clamp(16px, 3vh, 32px); }
+  .title-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(24px, 4vw, 72px); align-items: end; }
+  .title-grid .slide__hero { font-size: clamp(44px, 5.6vw, 100px); max-width: 12ch; }
+  .ba { display: grid; gap: clamp(8px, 1.4vh, 14px); }
+  .shot { position: relative; margin: 0; }
+  .frame { overflow: hidden; border: 1px solid var(--border-bright); border-radius: 6px; background: #000; }
+  .shot img, .shot video { width: 100%; height: auto; display: block; transform: scale(1.33); }
+  .shot video { border: 0; border-radius: 0; max-height: none; }
+  .tag { position: absolute; top: 10px; left: 10px; font: 600 12px var(--font-mono); letter-spacing: .06em; padding: 4px 8px; border-radius: 4px; background: var(--bg); border: 1.5px solid currentColor; }
+  .tag.before { color: var(--text-dim); }
+  .tag.after { color: var(--ok); }
+  .wall { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(10px, 1.4vw, 20px); max-width: calc((100dvh - 330px) * 3.6); }
+  .wall .frame { border-color: var(--border); }
+  .wall .shot figcaption { margin-top: 6px; font: 600 clamp(12px, 1.1vw, 14px) var(--font-mono); color: var(--text-dim); }
+  .stepper { list-style: none; counter-reset: s; display: grid; gap: 0; max-width: 40ch; }
+  .stepper li { counter-increment: s; position: relative; padding: 0 0 clamp(14px, 2.4vh, 26px) 52px; font-size: clamp(18px, 1.7vw, 21px); line-height: 1.35; }
+  .stepper li::before { content: counter(s); position: absolute; left: 0; top: -2px; width: 32px; height: 32px; display: grid; place-items: center; border: 2px solid var(--border-bright); border-radius: 50%; font: 600 14px var(--font-mono); background: var(--bg); z-index: 1; }
+  .stepper li:not(:last-child)::after { content: ''; position: absolute; left: 16px; top: 30px; bottom: 0; border-left: 2px solid var(--border); }
+  .stepper li:last-child::before { border-color: var(--accent); color: var(--accent); }
+  .stepper small { display: block; font: 500 14px var(--font-mono); color: var(--text-dim); margin-top: 2px; }
+  .ok-ring { fill: var(--bg); stroke: var(--ok); stroke-width: 2.5; }
+  .ok-tick { fill: none; stroke: var(--ok); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .col-head { font: 600 17px var(--font-mono); fill: var(--text-dim); }
+  .t-name { font: 600 22px var(--font-mono); fill: var(--text); }
+  .t-desc { font: 400 19px var(--font-body); fill: var(--text-dim); }
+  .t-line { stroke: var(--border-bright); stroke-width: 2; fill: none; }
+  .t-next { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 5; }
+  .t-chip { font: 600 14px var(--font-mono); fill: var(--accent); letter-spacing: .06em; }
+  .n-dash { fill: var(--bg); stroke: var(--border-bright); stroke-width: 2; stroke-dasharray: 7 6; }
+  .n-mid { font: 600 22px var(--font-body); fill: var(--text); }
+  .tool { font: 500 17px var(--font-mono); fill: var(--text-dim); }
+  @media (max-width: 900px) { .title-grid { grid-template-columns: 1fr; } .wall { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .shot--crop img { transform: none; }
+  .tag { font: 600 13px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; color: #fff; margin-right: 8px; }
+  .tag--before { background: var(--risk); }
+  .tag--after { background: var(--ok); }
+  .chat { border: 1px solid var(--border-bright); border-radius: 6px; background: var(--surface); padding: clamp(14px, 2.4vh, 24px) clamp(16px, 1.8vw, 28px); display: grid; gap: clamp(6px, 1.1vh, 12px); font: 400 clamp(14px, 1.15vw, 17px)/1.4 var(--font-mono); }
+  .chat p, .chat dl, .chat dd, .chat ol { margin: 0; }
+  .chat b { font-weight: 600; color: var(--accent); margin-right: 1ch; }
+  .chat__you { color: var(--text); font-weight: 600; }
+  .chat__head { font-size: .8em; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-dim); border-top: 1px solid var(--border); padding-top: clamp(6px, 1.1vh, 12px); }
+  .chat__head--go { color: var(--accent); }
+  .chat__kv { display: grid; grid-template-columns: max-content 1fr; gap: 2px 2ch; }
+  .chat__kv dt { color: var(--text-dim); }
+  .chat__rewrite { font: italic 400 clamp(17px, 1.5vw, 21px)/1.35 var(--font-display); color: var(--text); }
+  .chat__q { list-style: none; padding: 0; display: grid; gap: 2px; }
+  .ba--pair { grid-template-columns: 1fr 1fr; max-width: calc((100dvh - 360px) * 3.6); }
+  .shot figcaption { margin-top: 8px; }
+  @media (max-height: 700px) { .slide { gap: 12px; } figure svg { max-height: 50dvh; } }
+  @media (max-height: 600px) { .slide { padding: 24px clamp(24px, 6vw, 64px); } video { max-height: 52dvh; } table.m th, table.m td { padding: 5px 10px; } }
+  @media (max-height: 500px) { .deck-dots { display: none; } }
+  @media (max-width: 900px) { .split, .split--even, .multiples, .slide__kpis { grid-template-columns: 1fr; } .kpi + .kpi { padding-left: 0; } }
+  @media (max-width: 768px) { .diagram-shell svg { min-width: 720px; } }
+
+  :root { color-scheme: light;  --bg: #eceef1; --surface: #f8f9fb; --border: #d2d6dc; --border-bright: #7c848f; --text: #0d1015; --text-dim: #4b535e; --accent: #c2380b; --accent-dim: rgba(255,86,34,.12); --ok: #17703e; --risk: #a3173f; }
+  @media (prefers-color-scheme: dark) { :root {  --bg: #eceef1; --surface: #f8f9fb; --border: #d2d6dc; --border-bright: #7c848f; --text: #0d1015; --text-dim: #4b535e; --accent: #c2380b; --accent-dim: rgba(255,86,34,.12); --ok: #17703e; --risk: #a3173f; } }
+  .slide { background-color: var(--bg); color: var(--text); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M64 0H0V64' fill='none' stroke='rgba(20,30,50,.07)' stroke-width='1'/%3E%3C/svg%3E"); }
+  .slide--ink { --bg: #0d1117; --surface: #161b22; --border: #262d37; --border-bright: #6b7480; --text: #f2f4f7; --text-dim: #aab2bd; --accent: #ff5622; --accent-dim: rgba(255,86,34,.18); --ok: #6fd39a; --risk: #ff8fab; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M64 0H0V64' fill='none' stroke='rgba(255,235,225,.05)' stroke-width='1'/%3E%3C/svg%3E"); }
+  .slide--accent { --bg: #1f47d6; --surface: #2b54e4; --border: rgba(255,255,255,.26); --border-bright: rgba(255,255,255,.72); --text: #ffffff; --text-dim: rgba(255,255,255,.84); --accent: #ffffff; --accent-dim: rgba(255,255,255,.14); --ok: #b6f3cd; --risk: #ffd0dc; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M64 0H0V64' fill='none' stroke='rgba(255,255,255,.08)' stroke-width='1'/%3E%3C/svg%3E"); }
+  .slide--title::before { display: none; }
+  .slide[data-step]::before { content: attr(data-step); position: absolute; inset: 0 clamp(60px, 6vw, 120px) clamp(48px, 8vh, 96px) auto; display: flex; align-items: flex-end; overflow: hidden; z-index: -1; pointer-events: none; font: 400 clamp(220px, 32vw, 500px)/.8 var(--font-display); color: transparent; -webkit-text-stroke: 2px var(--accent); opacity: .22; }
+  .slide .frame, .chat { box-shadow: 0 22px 44px -22px rgba(8,14,30,.55); }
+  .slide--accent .frame { border-color: #ffffff; border-width: 2px; }
+  .slide__hero, .slide__heading { font-weight: 800; letter-spacing: -.03em; }
+  .slide__kpi-val, .ask { font-weight: 800; }
+  .chat { --bg: #0d1117; --surface: #0d1117; --border: #2a323d; --text: #f4f6f9; --text-dim: #b4bfcc; --accent: #ff6a3d; background: #0d1117; color: #f4f6f9; border-color: #0d1117; font: 500 clamp(18px, 1.3vw, 22px)/1.45 var(--font-body); gap: clamp(8px, 1.4vh, 14px); padding: clamp(18px, 3vh, 32px) clamp(20px, 2.2vw, 36px); }
+  .chat__you { font-family: var(--font-mono); font-size: .95em; }
+  .chat b { font-family: var(--font-mono); font-weight: 600; }
+  .chat__head { font: 700 clamp(14px, 1vw, 16px) var(--font-mono); letter-spacing: .1em; color: #ff6a3d; }
+  .chat__kv { gap: 4px 2.5ch; }
+  .chat__kv dt { font-family: var(--font-mono); font-size: .88em; color: #b4bfcc; padding-top: .1em; }
+  .chat__rewrite { font: 600 clamp(19px, 1.4vw, 23px)/1.4 var(--font-body); color: #ffffff; border-left: 3px solid #ff6a3d; padding-left: 14px; }
+  .stepper small { font-size: clamp(15px, 1.05vw, 17px); }
+    .split .slide__heading { font-size: clamp(30px, 3.4vw, 52px); }
+  .split--matrix { align-items: center; }
+  .split--matrix .stepper { max-width: none; }
+  @media (max-height: 600px) { .slide__heading { font-size: 30px; } .split .stepper small { display: none; } .split .stepper li { padding-bottom: 6px; } .chat { font-size: 16px; gap: 5px; padding: 14px 20px; } .chat__rewrite { font-size: 17px; } .chat__head { padding-top: 4px; } .stepper li { padding-bottom: 8px; } table.m th, table.m td { padding: 4px 10px; } }
+  .split--review { align-items: center; }
+  .split--review .risk-line { margin-top: clamp(16px, 3vh, 32px); max-width: 44ch; }
+  .risk-line b { color: var(--accent); font-weight: 700; }
+  .split--review .points { margin-top: clamp(10px, 1.8vh, 18px); }
+  .n-ai { fill: var(--surface); stroke: var(--accent); stroke-width: 2.5; }
+  .n-num { fill: var(--border-bright); }
+  .n-num--ai { fill: var(--accent); }
+  .n-numt { font: 700 16px var(--font-mono); fill: #fff; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px, 1.6vh, 18px); max-width: 640px; }
+  .tile { background: var(--surface); border: 1px solid var(--border); border-top: 4px solid var(--accent); border-radius: 6px; padding: clamp(12px, 2.2vh, 24px) clamp(14px, 1.4vw, 22px); display: grid; gap: 6px; box-shadow: 0 14px 30px -20px rgba(8,14,30,.45); }
+  .tile b { font: 800 clamp(20px, 1.7vw, 28px)/1.1 var(--font-display); letter-spacing: -.02em; }
+  .tile span { font-size: clamp(16px, 1.15vw, 19px); line-height: 1.35; color: var(--text-dim); }
+  .tile--key { background: #0d1117; border-color: #0d1117; border-top-color: #ff6a3d; }
+  .tile--key b { color: #fff; }
+  .tile--key span { color: #b4bfcc; }
+  @media (max-height: 600px) { .tile { padding: 10px 14px; gap: 2px; } .tile span { font-size: 15px; } }
+  .slide--photo { isolation: isolate; }
+  .slide--photo .bg-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .22; z-index: -1; filter: grayscale(.35); }
+  .slide--photo .title-grid { position: relative; }
+  .slide--photo .frame { border-color: rgba(255,255,255,.7); border-width: 2px; }
+  @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --bg: #0f1115; --surface: #181b21; --border: #2a2f37; --border-bright: #6b7380; --text: #eef0f3; --text-dim: #a3aab4; --accent: #ff7a45; --accent-dim: rgba(255,122,69,.14); --ok: #6cc492; --risk: #f57fa2; } .chat { border: 1px solid var(--border-bright); } }
+  .groups { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 2vw, 32px); margin-top: clamp(20px, 3.5vh, 40px); }
+  .groups > div { display: grid; gap: 12px; align-content: start; }
+  .groups .tile b { font-size: clamp(20px, 1.6vw, 26px); }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <section class="slide" data-figure="risk-code-review">
+    <div class="split split--even split--review">
+      <div>
+        <p class="slide__label">risk-code-review</p>
+        <h2 class="slide__heading">Risk sets how deep the review goes and who reviews</h2>
+        <p class="slide__body risk-line"><b>High risk</b> = the paths your repo's tier list marks high; with no list, code that saves data, moves money, reads flags or tenant, customer or user settings, or checks permissions. The reviewer reads the full diff, runs the tests and answers, with file:line:</p>
+        <ul class="points">
+          <li><b>Where else</b> does the patched pattern live? Every caller and copy</li>
+          <li><b>Odd API values:</b> 1900 dates, 0/0 coordinates, null for "none"</li>
+          <li><b>Failed request:</b> what does the UI roll back to?</li>
+          <li><b>Config flags read?</b> Then flag-matrix runs too</li>
+        </ul>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>review</b>example PR · High risk (payments)</p>
+          <dl class="chat__kv">
+            <dt>writer</dt><dd>Claude</dd>
+            <dt>reviewers</dt><dd>a fresh-context subagent, plus another vendor's model when one is installed</dd>
+            <dt>reads</dt><dd>the raw ticket, the reporter's screenshots, the final code</dd>
+          </dl>
+          <p class="chat__head">Findings · severity · confidence</p>
+          <ol class="chat__q">
+            <li><b>P0 90</b>refund total rounds twice → fix round</li>
+            <li><b>P1 60</b>test name should list the keys typed → PR body</li>
+            <li><b>P2 35</b>helper name → PR body</li>
+          </ol>
+          <p class="chat__head chat__head--go">Round 2: no P0 · a human reads the full diff</p>
+        </div>
+        <figcaption>Shortened example on your own PR: a P0 that holds after checking starts a fix round and the rest goes into the PR body; after 3 rounds without "no P0", change the approach. On someone else's PR the review stays a draft and the code is not touched.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="flag-matrix">
+    <div class="split split--even split--matrix">
+      <div>
+        <p class="slide__label">flag-matrix</p>
+        <h2 class="slide__heading">Each change gets its own matrix from the flags its code reads</h2>
+        <ol class="stepper">
+          <li>Catalog of the repo's flags<small>level, override order, default, every reader as file:line</small></li>
+          <li>Pick the flags the changed code reads<small>the environment's live values go in the run header</small></li>
+          <li>Profiles: default, each flag alone, each override, production, the bug's environment<small>merged only where the code cannot tell them apart</small></li>
+          <li>Every profile through every moment<small>the cell the change fixes must go red on the base first; a slowed response catches races</small></li>
+          <li>Cells the test env cannot reach go to QA<small>with the flag values QA needs to set</small></li>
+        </ol>
+      </div>
+      <figure>
+        <svg viewBox="0 0 700 430" role="img" aria-label="Matrix of 5 form moments by 3 config profiles, all 15 cells pass">
+          <text class="col-head" x="320" y="30" text-anchor="middle">price</text><text class="col-head" x="320" y="52" text-anchor="middle">view on</text>
+          <text class="col-head" x="470" y="30" text-anchor="middle">project</text><text class="col-head" x="470" y="52" text-anchor="middle">turns off</text>
+          <text class="col-head" x="620" y="30" text-anchor="middle">customer</text><text class="col-head" x="620" y="52" text-anchor="middle">turns off</text>
+          <line class="lane" x1="0" y1="72" x2="700" y2="72"/>
+          <text class="t-name" x="0" y="122">first-open</text>
+          <text class="t-name" x="0" y="192">pick-customer</text>
+          <text class="t-name" x="0" y="262">pick-project</text>
+          <text class="t-name" x="0" y="332">type:po</text>
+          <text class="t-name" x="0" y="402">plant-change</text>
+          <line class="lane" x1="0" y1="145" x2="700" y2="145"/><line class="lane" x1="0" y1="215" x2="700" y2="215"/><line class="lane" x1="0" y1="285" x2="700" y2="285"/><line class="lane" x1="0" y1="355" x2="700" y2="355"/>
+          <g id="ok"><circle class="ok-ring" cx="320" cy="114" r="22"/><path class="ok-tick" d="M309 114 l8 8 l14 -15"/></g>
+          <use href="#ok" x="150"/><use href="#ok" x="300"/>
+          <use href="#ok" y="70"/><use href="#ok" x="150" y="70"/><use href="#ok" x="300" y="70"/>
+          <use href="#ok" y="140"/><use href="#ok" x="150" y="140"/><use href="#ok" x="300" y="140"/>
+          <use href="#ok" y="210"/><use href="#ok" x="150" y="210"/><use href="#ok" x="300" y="210"/>
+          <use href="#ok" y="280"/><use href="#ok" x="150" y="280"/><use href="#ok" x="300" y="280"/>
+        </svg>
+        <figcaption>Example run: the code read one flag, price view, set on customer or project, so 3 profiles: the default and each override; 15 of 15 cells pass.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="skills">
+    <p class="slide__label">skills</p>
+    <h2 class="slide__heading">Nine agent skills that make the agent check its own work</h2>
+    <div class="groups">
+      <div>
+        <p class="case__trigger">Before the work</p>
+        <div class="tile tile--key"><b>start</b><span>one command: sharpen, clarify, implement, gates, review</span></div>
+        <div class="tile"><b>worktree</b><span>own git worktree per task</span></div>
+        <div class="tile"><b>verify-env</b><span>read-only doctor for the host</span></div>
+      </div>
+      <div>
+        <p class="case__trigger">While it works</p>
+        <div class="tile"><b>supply-chain-guard</b><span>7-day cooldown, install diffs reviewed</span></div>
+        <div class="tile"><b>bigfile-guard</b><span>big files may stay, not grow</span></div>
+        <div class="tile"><b>i-have-adhd</b><span>answers that start with the next action</span></div>
+      </div>
+      <div>
+        <p class="case__trigger">Before the merge</p>
+        <div class="tile tile--key"><b>risk-code-review</b><span>review depth and reviewers set by risk</span></div>
+        <div class="tile"><b>flag-matrix</b><span>every flag profile through every moment</span></div>
+        <div class="tile"><b>explain-gate</b><span>the PR's explanation checked against its diff</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="bigfile-guard">
+    <div class="split split--even split--review">
+      <div>
+        <p class="slide__label">bigfile-guard</p>
+        <h2 class="slide__heading">Big files may stay, but a commit that makes them bigger gets flagged</h2>
+        <ul class="points">
+          <li><b>Reports</b> staged text files over about 5000 tokens that are new or grew</li>
+          <li><b>Skips</b> binaries, lockfiles, minified, vendored and generated files, and files that shrink</li>
+          <li><b>Warns</b> by default; blocks with <span class="mono">bigfile.mode block</span> or <span class="mono">BIGFILE_MODE=block</span></li>
+          <li><b>Never</b> stops a commit because the guard itself broke</li>
+        </ul>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>$</b>git commit -m "add notes"</p>
+          <p class="chat__head">bigfile-guard · mode=warn</p>
+          <dl class="chat__kv">
+            <dt>NEW</dt><dd>notes.md · ~7800 tok</dd>
+            <dt>fix</dt><dd>split the file, or add a glob to .bigfile-allow if it is generated or vendored</dd>
+          </dl>
+          <p class="chat__head chat__head--go">exit 0 · the commit goes on</p>
+        </div>
+        <figcaption>Tokens are estimated as max(bytes / 4, words × 1.3). Runs as a git pre-commit hook, and optionally as a Claude Code hook on git commit.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="explain-gate">
+    <div class="split split--even split--matrix">
+      <div>
+        <p class="slide__label">explain-gate</p>
+        <h2 class="slide__heading">The PR's own explanation, checked against its diff</h2>
+        <ol class="stepper">
+          <li>Find "## Explanation"<small>What / Why / Risk; none found: no_section</small></li>
+          <li>Rules<small>files, symbols and numbers it names; big changes it never names; Risk "none" on a risky diff</small></li>
+          <li>Model read, optional<small>codex in a read-only sandbox; skip with --no-model</small></li>
+          <li>Verdict<small>mismatch, ok or not checked; exit 0 on every path</small></li>
+        </ol>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>explain-check</b>example PR</p>
+          <dl class="chat__kv">
+            <dt>What</dt><dd>"renames parseConfig to loadConfig"</dd>
+            <dt>Risk</dt><dd>"none"</dd>
+          </dl>
+          <p class="chat__head">Findings</p>
+          <ol class="chat__q">
+            <li><b>symbol</b>loadConfig does not appear in the diff</li>
+            <li><b>risk</b>"none", but the diff changes a pre-commit hook</li>
+          </ol>
+          <p class="chat__head chat__head--go">mismatch · 2 claims to check by hand</p>
+        </div>
+        <figcaption>Shortened example. A finding is a claim to verify, not a fact, and the gate never blocks.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="i-have-adhd">
+    <div class="split split--even split--review">
+      <div>
+        <p class="slide__label">i-have-adhd</p>
+        <h2 class="slide__heading">Answers you can act on from the first line</h2>
+        <ul class="points">
+          <li><b>Next action first</b>, one concrete next action last</li>
+          <li><b>Numbered steps</b>, one bounded action each</li>
+          <li><b>State restated</b> every turn</li>
+          <li><b>Specific time estimates</b>, not "a while"</li>
+          <li><b>No preamble</b>, recap or closer</li>
+        </ul>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__head" style="border-top:0;padding-top:0">Before</p>
+          <p>Great question! There are a few things we could look at here. First, some background on how the auth flow works...</p>
+          <p class="chat__head chat__head--go">After</p>
+          <p class="chat__rewrite">Run npm install jsonwebtoken, then edit src/auth.ts:42.</p>
+          <p>Step 3 of 5 done: schema updated. Next: backfill.</p>
+          <p>About 15 minutes if tests cover this. An afternoon if not.</p>
+        </div>
+        <figcaption>10 output rules and a pre-send check. Adapted from ayghri/i-have-adhd (MIT).</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="start">
+    <div class="split split--even split--matrix">
+      <div>
+        <p class="slide__label">start</p>
+        <h2 class="slide__heading">One command runs the whole task</h2>
+        <ol class="stepper">
+          <li>Sharpen<small>what an expert would add; the prompt rewritten</small></li>
+          <li>Clarify<small>open questions asked once, max 5</small></li>
+          <li>Implement<small>nobody else on it? then a worktree</small></li>
+          <li>Gates<small>hooks block, never bypassed</small></li>
+          <li>Verify and review<small>evidence, flag-matrix, risk-code-review</small></li>
+          <li>Lessons<small>corrections queued</small></li>
+        </ol>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>@start</b>fix the duplicate toast after saving an order</p>
+          <p class="chat__head">First output, before any tool call</p>
+          <dl class="chat__kv">
+            <dt>expert</dt><dd>reproduce the double save first</dd>
+            <dt>material</dt><dd>the save handler and the toast call</dd>
+            <dt>tools</dt><dd>an e2e test of the save</dd>
+            <dt>proof</dt><dd>the test red on main, green on the fix</dd>
+          </dl>
+          <p class="chat__rewrite">Find why saving shows the toast twice, prove it with an e2e test that fails on main, fix the root cause.</p>
+          <p class="chat__head chat__head--go">stops for you: clarify · cost gate · commit and push</p>
+        </div>
+        <figcaption>Shortened example. A stage whose skill is not installed is skipped.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="supply-chain-guard">
+    <div class="split split--even split--matrix">
+      <div>
+        <p class="slide__label">supply-chain-guard</p>
+        <h2 class="slide__heading">Fresh releases wait 7 days, and a named npm or PyPI package gets a diff review</h2>
+        <ol class="stepper">
+          <li>Parse the command<small>chains, wrappers, sh -c; installs nothing: exits in about 30 ms</small></li>
+          <li>Fetch both versions<small>installed vs what the command would install</small></li>
+          <li>Signals<small>diff scan, OSV, release age; a block floor denies</small></li>
+          <li>Claude review<small>claude -p with no tools, sees only the diff</small></li>
+          <li>Verdict<small>the stricter of floor and review; an error asks</small></li>
+        </ol>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>$</b>npm i example-lib@2.4.1</p>
+          <dl class="chat__kv">
+            <dt>installed</dt><dd>2.4.0</dd>
+            <dt>requested</dt><dd>2.4.1, released 2 days ago</dd>
+            <dt>diff</dt><dd>what changed between the two, scanned and reviewed</dd>
+          </dl>
+          <p class="chat__head">Signals</p>
+          <ol class="chat__q">
+            <li><b>ask</b>fresh-release: younger than the 7-day cooldown</li>
+          </ol>
+          <p class="chat__head chat__head--go">ask · you decide in the permission prompt</p>
+        </div>
+        <figcaption>Shortened example. The hook never grants permission: allow leaves your normal rules in charge. The cooldown is set in npm, pnpm, yarn, bun and uv.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="verify-env">
+    <div class="split split--even split--review">
+      <div>
+        <p class="slide__label">verify-env</p>
+        <h2 class="slide__heading">Find the missing tool before the long run, not halfway through</h2>
+        <ul class="points">
+          <li><b>Tools</b>: node, git, npm, pnpm, gh, codex, claude, plus what a repo profile adds</li>
+          <li><b>Session</b>: gh auth, shims on PATH, disk, ports, Playwright Chromium</li>
+          <li><b>Read-only</b>: never installs, writes or edits PATH</li>
+          <li><b>Exit code</b>: 0 ok, 1 a failure, 2 only warnings</li>
+        </ul>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>$</b>node verify-env.mjs</p>
+          <dl class="chat__kv">
+            <dt>OK</dt><dd>tool:node · node 24.16.0</dd>
+            <dt>OK</dt><dd>tool:git · git 2.45.1</dd>
+            <dt>OK</dt><dd>tool:pnpm · pnpm 11.5.2</dd>
+            <dt>WARN</dt><dd>tool:npm · npm not on PATH</dd>
+            <dt>OK</dt><dd>tool:gh · gh 2.86.0</dd>
+            <dt>OK</dt><dd>tool:codex · codex 0.162.1</dd>
+          </dl>
+          <p class="chat__head chat__head--go">one line per check · --json for agents</p>
+        </div>
+        <figcaption>Shortened example. On one host the profile caught npm missing from PATH, gh resolving past its shim, and a sandbox restriction that breaks Chromium.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="worktree">
+    <div class="split split--even split--matrix">
+      <div>
+        <p class="slide__label">worktree</p>
+        <h2 class="slide__heading">Each substantive task gets its own worktree, so sessions stop overwriting each other</h2>
+        <ol class="stepper">
+          <li>Create<small>git worktree add root/slug -b branch origin/HEAD</small></li>
+          <li>Work by path<small>absolute paths, cd "tree" &amp;&amp; cmd</small></li>
+          <li>Ship<small>commit and push from the tree</small></li>
+          <li>Keep or remove<small>removed once the PR is merged, closed or abandoned</small></li>
+        </ol>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>task</b>fix the login redirect bug</p>
+          <dl class="chat__kv">
+            <dt>tree</dt><dd>root/login-redirect</dd>
+            <dt>branch</dt><dd>fix/login-redirect</dd>
+            <dt>checkout</dt><dd>untouched: other sessions keep their branch, stash and dev server</dd>
+          </dl>
+          <p class="chat__head">Exempt</p>
+          <p>conversation, read-only investigation, review only, a trivial edit asked for in place</p>
+          <p class="chat__head chat__head--go">never switches the session: no approval prompt to stall on</p>
+        </div>
+        <figcaption>Shortened example. The worktree root is set per machine.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

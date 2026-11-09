@@ -2,6 +2,13 @@
 
 **Before the first file edit of a real task in a shared checkout, the agent creates its own git worktree, works there, and says when to keep or remove it.**
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/worktree-dark.png">
+    <img alt="Each substantive task gets its own worktree, so sessions stop overwriting each other: create it off the default branch, work by absolute path, commit and push from the tree, remove it once the PR is merged, closed or abandoned. Example: fix the login redirect bug gets its own tree and branch, the shared checkout stays untouched." src="assets/worktree-light.png" width="880">
+  </picture>
+</p>
+
 > The worktree root differs per machine; this repo keeps it in `hosts/<host>.md`. Set your own root and pruning in your global `CLAUDE.md` or the skill.
 
 ```
@@ -11,7 +18,7 @@
 | | |
 | --- | --- |
 | **Fires** | before the first edit of a substantive task: a feature slice, a bug fix, spec or plan work, anything that ends in a commit |
-| **Does** | `git worktree add <root>/<slug> -b <branch>` off the default branch, then works in it by absolute path and `cd "<tree>" &&` from the launch directory |
+| **Does** | `git worktree add <root>/<slug> -b <branch> origin/HEAD` (the remote default branch), then works in it by absolute path and `cd "<tree>" &&` from the launch directory |
 | **Exempt** | conversation, read-only investigation, review only, a trivial single-file edit asked for in place |
 | **Never** | uses `EnterWorktree`: any path outside `.claude/worktrees/` asks for approval, and its `name` form puts trees inside the checkout |
 
@@ -23,7 +30,7 @@ Several agent sessions in one checkout overwrite each other's branch, stash and 
 
 ```mermaid
 flowchart LR
-  A["<b>1 · Create</b><br/>git worktree add<br/>root/slug -b branch"] --> B["<b>2 · Work by path</b><br/>absolute paths,<br/>cd tree && cmd"]
+  A["<b>1 · Create</b><br/>git worktree add<br/>root/slug -b branch<br/>origin/HEAD"] --> B["<b>2 · Work by path</b><br/>absolute paths,<br/>cd tree && cmd"]
   B --> C["<b>3 · Ship</b><br/>commit, push<br/>from the tree"]
   C --> D{"PR merged, closed<br/>or abandoned?"}
   D -- yes --> R(["git worktree remove"])
