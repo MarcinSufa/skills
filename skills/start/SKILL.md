@@ -1,6 +1,6 @@
 ---
 name: start
-description: Use when the user types `@start <task>` (or `@start setup`). Runs the whole pipeline from one command by composing other skills: sharpen, clarify (grilling), implement (worktree, conduct), gates, verify and review (flag-matrix, risk-code-review), lessons (promote-lessons). On first use it asks once for the team (conductor, worker, reviewer models) and a default strategy, and saves them in the user's roster file.
+description: "Use when the user types `@start <task>` (or `@start setup`). Runs the whole pipeline from one command by composing other skills: sharpen, clarify (grilling), implement (worktree, conduct), gates, verify and review (flag-matrix, risk-code-review), lessons (promote-lessons). On first use it asks once for the team (conductor, worker, reviewer models) and a default strategy, and saves them in the user's roster file."
 ---
 
 # @start pipeline
