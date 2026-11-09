@@ -293,7 +293,7 @@
       </div>
       <figure>
         <div class="chat">
-          <p class="chat__you"><b>review</b>PR #142 · High risk (order quantities)</p>
+          <p class="chat__you"><b>review</b>example PR · High risk (payments)</p>
           <dl class="chat__kv">
             <dt>writer</dt><dd>Claude</dd>
             <dt>reviewers</dt><dd>a fresh-context subagent, plus another vendor's model when one is installed</dd>
@@ -301,7 +301,7 @@
           </dl>
           <p class="chat__head">Findings · severity · confidence</p>
           <ol class="chat__q">
-            <li><b>P0 90</b>empty quantity: "21." blanks during a pause → fix round</li>
+            <li><b>P0 90</b>refund total rounds twice → fix round</li>
             <li><b>P1 60</b>test name should list the keys typed → PR body</li>
             <li><b>P2 35</b>helper name → PR body</li>
           </ol>
@@ -378,7 +378,7 @@
     <div class="split split--even split--review">
       <div>
         <p class="slide__label">bigfile-guard</p>
-        <h2 class="slide__heading">Big files may stay, but a commit cannot make them bigger</h2>
+        <h2 class="slide__heading">Big files may stay, but a commit that makes them bigger gets flagged</h2>
         <ul class="points">
           <li><b>Reports</b> staged text files over about 5000 tokens that are new or grew</li>
           <li><b>Skips</b> binaries, lockfiles, minified, vendored and generated files, and files that shrink</li>
@@ -415,7 +415,7 @@
       </div>
       <figure>
         <div class="chat">
-          <p class="chat__you"><b>explain-check</b>PR #57</p>
+          <p class="chat__you"><b>explain-check</b>example PR</p>
           <dl class="chat__kv">
             <dt>What</dt><dd>"renames parseConfig to loadConfig"</dd>
             <dt>Risk</dt><dd>"none"</dd>
@@ -495,7 +495,7 @@
     <div class="split split--even split--matrix">
       <div>
         <p class="slide__label">supply-chain-guard</p>
-        <h2 class="slide__heading">Fresh releases wait 7 days, and what an agent installs gets a diff review</h2>
+        <h2 class="slide__heading">Fresh releases wait 7 days, and a named package install gets a diff review</h2>
         <ol class="stepper">
           <li>Parse the command<small>chains, wrappers, sh -c; installs nothing: exits in about 30 ms</small></li>
           <li>Fetch both versions<small>installed vs what the command would install</small></li>
@@ -557,7 +557,7 @@
     <div class="split split--even split--matrix">
       <div>
         <p class="slide__label">worktree</p>
-        <h2 class="slide__heading">Each task gets its own worktree, so sessions stop overwriting each other</h2>
+        <h2 class="slide__heading">Each substantive task gets its own worktree, so sessions stop overwriting each other</h2>
         <ol class="stepper">
           <li>Create<small>git worktree add root/slug -b branch, off the default branch</small></li>
           <li>Work by path<small>absolute paths, cd "tree" &amp;&amp; cmd</small></li>

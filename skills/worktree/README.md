@@ -5,7 +5,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/worktree-dark.png">
-    <img alt="Each task gets its own worktree, so sessions stop overwriting each other: create it off the default branch, work by absolute path, commit and push from the tree, remove it once the PR is merged, closed or abandoned. Example: fix the login redirect bug gets its own tree and branch, the shared checkout stays untouched." src="assets/worktree-light.png" width="880">
+    <img alt="Each substantive task gets its own worktree, so sessions stop overwriting each other: create it off the default branch, work by absolute path, commit and push from the tree, remove it once the PR is merged, closed or abandoned. Example: fix the login redirect bug gets its own tree and branch, the shared checkout stays untouched." src="assets/worktree-light.png" width="880">
   </picture>
 </p>
 
