@@ -10,7 +10,7 @@
 </p>
 
 ```
-@review 3241              # a PR number or URL
+@review 42                # a PR number or URL
 @review feat/my-branch    # a branch, diffed against its base
 ```
 

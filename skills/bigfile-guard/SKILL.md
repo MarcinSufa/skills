@@ -5,7 +5,7 @@ description: Git pre-commit hook and Claude Code PreToolUse hook that flag stage
 
 # bigfile-guard
 
-Agents read large files in parts and edit them less reliably. The guard stops the growth of large files at commit time; it does not touch files that already exist and do not grow.
+Agents read large files in parts and edit them less reliably. The guard flags the growth of large files at commit time (warns by default, blocks when configured); it does not touch files that already exist and do not grow.
 
 ## Rule
 

@@ -18,7 +18,7 @@
 | | |
 | --- | --- |
 | **Fires** | before the first edit of a substantive task: a feature slice, a bug fix, spec or plan work, anything that ends in a commit |
-| **Does** | `git worktree add <root>/<slug> -b <branch>` off the default branch, then works in it by absolute path and `cd "<tree>" &&` from the launch directory |
+| **Does** | `git worktree add <root>/<slug> -b <branch> origin/HEAD` (the remote default branch), then works in it by absolute path and `cd "<tree>" &&` from the launch directory |
 | **Exempt** | conversation, read-only investigation, review only, a trivial single-file edit asked for in place |
 | **Never** | uses `EnterWorktree`: any path outside `.claude/worktrees/` asks for approval, and its `name` form puts trees inside the checkout |
 

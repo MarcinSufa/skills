@@ -1,6 +1,6 @@
 # bigfile-guard
 
-**Stops big files from getting bigger: at commit time it reports any staged text file over about 5000 tokens that is new or grew, so agents keep working on files they can read whole.**
+**Flags big files that get bigger: at commit time it reports any staged text file over about 5000 tokens that is new or grew, so agents keep working on files they can read whole.**
 
 <p align="center">
   <picture>

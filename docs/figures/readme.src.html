@@ -495,7 +495,7 @@
     <div class="split split--even split--matrix">
       <div>
         <p class="slide__label">supply-chain-guard</p>
-        <h2 class="slide__heading">Fresh releases wait 7 days, and a named package install gets a diff review</h2>
+        <h2 class="slide__heading">Fresh releases wait 7 days, and a named registry package gets a diff review</h2>
         <ol class="stepper">
           <li>Parse the command<small>chains, wrappers, sh -c; installs nothing: exits in about 30 ms</small></li>
           <li>Fetch both versions<small>installed vs what the command would install</small></li>
@@ -559,7 +559,7 @@
         <p class="slide__label">worktree</p>
         <h2 class="slide__heading">Each substantive task gets its own worktree, so sessions stop overwriting each other</h2>
         <ol class="stepper">
-          <li>Create<small>git worktree add root/slug -b branch, off the default branch</small></li>
+          <li>Create<small>git worktree add root/slug -b branch origin/HEAD</small></li>
           <li>Work by path<small>absolute paths, cd "tree" &amp;&amp; cmd</small></li>
           <li>Ship<small>commit and push from the tree</small></li>
           <li>Keep or remove<small>removed once the PR is merged, closed or abandoned</small></li>
