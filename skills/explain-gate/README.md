@@ -2,6 +2,13 @@
 
 **Checks that a PR's own explanation matches its diff: the "## Explanation" section (What / Why / Risk) is compared with the changes by deterministic rules and an optional model read, and every mismatch comes back as a warning.**
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/explain-gate-dark.png">
+    <img alt="The PR's own explanation, checked against its diff: find the Explanation section, apply rules (files, symbols and numbers it names, big changes it never names, Risk none on a risky diff), an optional read-only model read, and a verdict of mismatch, ok or not checked with exit 0. Example: the text says parseConfig was renamed to loadConfig with Risk none; findings: loadConfig is not in the diff, and the diff changes a pre-commit hook; mismatch, 2 claims to check by hand." src="assets/explain-gate-light.png" width="880">
+  </picture>
+</p>
+
 ```sh
 gh pr view 123 --json body -q .body > /tmp/body.md
 gh pr diff 123 > /tmp/pr.diff

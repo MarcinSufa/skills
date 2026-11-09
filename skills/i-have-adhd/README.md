@@ -2,6 +2,13 @@
 
 **Shapes the agent's answers for a reader with ADHD: the next action first, numbered steps, state restated every turn, concrete time estimates, visible wins, no preamble or closing pleasantries.**
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/i-have-adhd-dark.png">
+    <img alt="Answers you can act on from the first line: next action first, numbered steps, state restated every turn, specific time estimates, no preamble, recap or closer. Before: a friendly preamble and background. After: run npm install jsonwebtoken, then edit src/auth.ts:42; step 3 of 5 done; about 15 minutes if tests cover this." src="assets/i-have-adhd-light.png" width="880">
+  </picture>
+</p>
+
 > Based on [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd) by Ayoub Ghriss, MIT licence. This copy is an earlier version of upstream's `skills/i-have-adhd/SKILL.md` (closest upstream commit `9370202`) with two local changes: the description also tells the agent to apply it on its own before any long final answer, and `disable-model-invocation: true` is removed so the agent can load it unprompted. Upstream has since added persistence rules, a task-tool rule and more overrides; check it before copying this one.
 
 ```

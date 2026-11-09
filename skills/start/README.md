@@ -2,6 +2,13 @@
 
 **One command runs a whole task: `@start <task>` sharpens the request, asks open questions once, implements in a worktree, runs the gates, has the result reviewed by fresh reviewers, and queues the lessons.**
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/start-dark.png">
+    <img alt="One command runs the whole task: sharpen, clarify, implement, gates, verify and review, lessons. Example: @start fix the duplicate toast after saving an order; the first output names what an expert would add, the raw material, the tools and the outside proof, then rewrites the prompt; it stops for the clarify answer, a cost gate, and commit and push." src="assets/start-light.png" width="880">
+  </picture>
+</p>
+
 > A pipeline skill that names other skills and hooks. It is wired to this setup: the `@start` alias lives in the global `CLAUDE.md`, and the stages call `grilling`, `conduct`, `risk-code-review`, `flag-matrix` and hooks such as never-do. Copy it as a template for your own pipeline rather than as a drop-in. `grilling` and `diagnosing-bugs` come from [mattpocock/skills](https://github.com/mattpocock/skills); a stage whose skill is not installed is skipped.
 
 ```
