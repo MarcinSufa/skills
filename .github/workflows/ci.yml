@@ -22,6 +22,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
@@ -30,3 +31,6 @@ jobs:
       - name: Run verify-env tests on a simulated win32 host
         working-directory: skills/verify-env
         run: node --import ./test/win32-host.mjs --test test/*.test.mjs
+      - name: Plugin version raised when skills change
+        if: github.event_name == 'pull_request'
+        run: node scripts/check-version.mjs origin/${{ github.base_ref }}

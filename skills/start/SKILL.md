@@ -1,6 +1,6 @@
 ---
 name: start
-description: Use when the user types `@start <task>`. Runs the whole pipeline from one command: sharpen, clarify, implement, gates, cross-model review, lessons.
+description: "Use when the user types `@start <task>`. Runs the whole pipeline from one command: sharpen, clarify, implement, gates, cross-model review, lessons."
 ---
 
 # @start pipeline
