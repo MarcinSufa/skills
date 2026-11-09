@@ -39,7 +39,7 @@ test("labels are capped at 120 chars and never carry aggregated_output", () => {
 
 test("file_change label is '<kind> <path>' with a (+N) suffix for extra changes", () => {
   const fileEntry = parseCodexSpans(fixture).find((e) => e.itemId === "item_16");
-  assert.match(fileEntry.label, /^add .*gate-p2-0a-satisfiability\.md \(\+1\)$/);
+  assert.match(fileEntry.label, /^add .*gate-demo-satisfiability\.md \(\+1\)$/);
 });
 
 test("an item.started with no item.completed is interrupted, offset at the started line", () => {
