@@ -1,0 +1,13 @@
+﻿stderr: probe harness warm-up noise, not JSON
+{"type":"thread.started","thread_id":"01a0916a-4268-7f12-949d-9dcfca1dd755"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_1","type":"agent_message","text":"I will read the slice brief, write the two gate files under .conduct/ and run the gate once."}}
+{"type":"item.started","item":{"id":"item_2","type":"command_execution","command":"cat .conduct/brief-p2-0a.md; rg --files .conduct","aggregated_output":"","exit_code":null,"status":"in_progress"}}
+{"type":"item.completed","item":{"id":"item_2","type":"command_execution","command":"cat .conduct/brief-p2-0a.md; rg --files .conduct","aggregated_output":"# Brief P2-0a: the panel reads real conduct event files\n","exit_code":0,"status":"completed"}}
+{"type":"item.started","item":{"id":"item_3","type":"command_execution","command":"cat src/orchestration.ts .conduct/gate-panel-v5.mjs scripts/lib/hook-map.mjs xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx","aggregated_output":"","exit_code":null,"status":"in_progress"}}
+{"type":"item.completed","item":{"id":"item_3","type":"command_execution","command":"cat src/orchestration.ts .conduct/gate-panel-v5.mjs scripts/lib/hook-map.mjs xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx","aggregated_output":"--- source ---\nimport { buildTimeline } from './timeline';\n","exit_code":0,"status":"completed"}}
+{"type":"item.started","item":{"id":"item_5","type":"command_execution","command":"wc -l .conduct/events.ndjson; git diff --name-only origin/main; node -e \"import('./fixtures/hook-agent-pretooluse.json',{with:{type:'json'}})\"","aggregated_output":"","exit_code":null,"status":"in_progress"}}
+{"type":"item.completed","item":{"id":"item_5","type":"command_execution","command":"wc -l .conduct/events.ndjson; git diff --name-only origin/main; node -e \"import('./fixtures/hook-agent-pretooluse.json',{with:{type:'json'}})\"","aggregated_output":"count=4\n{\"kind\":\"conduct\",\"goal\":\"p2-program\"}","exit_code":1,"status":"failed"}}
+{"type":"item.started","item":{"id":"item_16","type":"file_change","changes":[{"path":"/work/demo/.conduct/gate-p2-0a-satisfiability.md","kind":"add"},{"path":"/work/demo/.conduct/gate-p2-0a.mjs","kind":"add"}],"status":"in_progress"}}
+{"type":"item.completed","item":{"id":"item_16","type":"file_change","changes":[{"path":"/work/demo/.conduct/gate-p2-0a-satisfiability.md","kind":"add"},{"path":"/work/demo/.conduct/gate-p2-0a.mjs","kind":"add"}],"status":"completed"}}
+{"type":"turn.completed","usage":{"input_tokens":1204920,"cached_input_tokens":1128192,"cache_write_input_tokens":0,"output_tokens":11692,"reasoning_output_tokens":3289}}

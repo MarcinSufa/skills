@@ -5,9 +5,11 @@ Agent skills for Claude Code (they also work in other agents that read `SKILL.md
 | Skill | What it does | Upstream |
 | --- | --- | --- |
 | [bigfile-guard](skills/bigfile-guard/README.md) | Flags staged text files over about 5000 tokens that are new or grew, so agents can read files whole | own |
+| [conduct](skills/conduct/README.md) | Multi-model orchestration: the driving session briefs and adjudicates, workers from several vendors implement and review | own |
 | [explain-gate](skills/explain-gate/README.md) | Checks a PR's What / Why / Risk explanation against its diff | own |
 | [flag-matrix](skills/flag-matrix/README.md) | Tests a change that reads a flag or config setting across every flag profile and read moment | own |
 | [i-have-adhd](skills/i-have-adhd/README.md) | Answers shaped for an ADHD reader: next action first, numbered steps, no filler | adapted from ayghri (MIT) |
+| [promote-lessons](skills/promote-lessons/README.md) | Turns queued corrections into guard-hook rules and skill edits, each approved and tested | own |
 | [risk-code-review](skills/risk-code-review/README.md) | Code review whose depth and reviewers follow the risk of the change | own |
 | [start](skills/start/README.md) | `@start <task>` pipeline: sharpen, clarify, implement, gates, review, lessons | own |
 | [supply-chain-guard](skills/supply-chain-guard/README.md) | Release cooldown for package managers plus a hook that diffs what an install would add | own |
