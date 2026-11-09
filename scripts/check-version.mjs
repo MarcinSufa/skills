@@ -1,4 +1,3 @@
-// PR check: a change under skills/ must raise the plugin version in .claude-plugin/plugin.json.
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
