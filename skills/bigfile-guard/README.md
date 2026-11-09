@@ -1,6 +1,13 @@
 # bigfile-guard
 
-**Stops big files from getting bigger: at commit time it reports any staged text file over about 5000 tokens that is new or grew, so agents keep working on files they can read whole.**
+**Flags big files that get bigger: at commit time it reports any staged text file over about 5000 tokens that is new or grew, so agents keep working on files they can read whole.**
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/bigfile-guard-dark.png">
+    <img alt="Big files may stay, but a commit that makes them bigger gets flagged. The guard reports staged text files over about 5000 tokens that are new or grew, skips binaries, lockfiles, minified, vendored, generated and shrinking files, warns by default and blocks only when configured, and never stops a commit because it broke. Example: git commit reports notes.md as NEW at about 7800 tokens, suggests splitting it or allowing it, and the commit goes on with exit 0." src="assets/bigfile-guard-light.png" width="880">
+  </picture>
+</p>
 
 ```
 $ git commit -m "add notes"

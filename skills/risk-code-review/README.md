@@ -2,8 +2,15 @@
 
 **Code review whose depth follows the risk of the change.** Fresh-context reviewers picked by the tier, at least one from another vendor than the writer when one is installed, review it, and the report ends with how much a human still has to check.
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/risk-code-review-dark.png">
+    <img alt="Risk sets how deep the review goes and who reviews. High risk is what the repo's tier list marks high, or by default code that saves data, moves money, reads flags or tenant, customer or user settings, or checks permissions; it gets questions answered with file:line: where else the pattern lives, odd API values, what a failed request rolls back to, and whether config flags are read. Example review of your own high risk PR: reviewers are a fresh-context subagent plus another vendor's model when installed, reading the raw ticket, screenshots and final code; findings P0 90 (fix round), P1 60 and P2 35 (PR body); round 2 has no P0 and a human reads the full diff." src="assets/risk-code-review-light.png" width="880">
+  </picture>
+</p>
+
 ```
-@review 3241              # a PR number or URL
+@review 42                # a PR number or URL
 @review feat/my-branch    # a branch, diffed against its base
 ```
 
