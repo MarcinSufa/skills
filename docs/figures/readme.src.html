@@ -279,8 +279,8 @@
     <div class="split split--even split--review">
       <div>
         <p class="slide__label">risk-code-review</p>
-        <h2 class="slide__heading">Risk sets how deep the review goes, and another AI vendor does it</h2>
-        <p class="slide__body risk-line"><b>High risk</b> = the paths your repo marks high: saving data, money, config, permissions. The reviewer reads the full diff, runs the tests and answers, with file:line:</p>
+        <h2 class="slide__heading">Risk sets how deep the review goes and who reviews</h2>
+        <p class="slide__body risk-line"><b>High risk</b> = the paths your repo's tier list marks high; with no list, code that saves data, moves money, reads flags or tenant, customer or user settings, or checks permissions. The reviewer reads the full diff, runs the tests and answers, with file:line:</p>
         <ul class="points">
           <li><b>Where else</b> does the patched pattern live? Every caller and copy</li>
           <li><b>Odd API values:</b> 1900 dates, 0/0 coordinates, null for "none"</li>
@@ -292,9 +292,9 @@
         <div class="chat">
           <p class="chat__you"><b>review</b>PR #142 · High risk (order quantities)</p>
           <dl class="chat__kv">
-            <dt>writer</dt><dd>Claude or GPT</dd>
-            <dt>reviewer</dt><dd>the other one, never the writer's vendor</dd>
-            <dt>reads</dt><dd>the issue, the reporter's video, the final code</dd>
+            <dt>writer</dt><dd>Claude</dd>
+            <dt>reviewers</dt><dd>a fresh-context subagent, plus another vendor's model when one is installed</dd>
+            <dt>reads</dt><dd>the raw ticket, the reporter's screenshots, the final code</dd>
           </dl>
           <p class="chat__head">Findings · severity · confidence</p>
           <ol class="chat__q">
@@ -302,9 +302,9 @@
             <li><b>P1 60</b>test name should list the keys typed → PR body</li>
             <li><b>P2 35</b>helper name → PR body</li>
           </ol>
-          <p class="chat__head chat__head--go">Round 2: no P0 · ready for QA</p>
+          <p class="chat__head chat__head--go">Round 2: no P0 · a human reads the full diff</p>
         </div>
-        <figcaption>Shortened example. A P0 starts a fix round and the rest goes into the PR body; after 3 rounds without "no P0", change the approach, not the patch.</figcaption>
+        <figcaption>Shortened example on your own PR: a P0 that holds after checking starts a fix round and the rest goes into the PR body; after 3 rounds without "no P0", change the approach. On someone else's PR the review stays a draft and the code is not touched.</figcaption>
       </figure>
     </div>
   </section>
@@ -317,8 +317,8 @@
         <ol class="stepper">
           <li>Catalog of the repo's flags<small>level, override order, default, every reader as file:line</small></li>
           <li>Pick the flags the changed code reads<small>the environment's live values go in the run header</small></li>
-          <li>One profile per flag combination<small>more flags read, more columns</small></li>
-          <li>Every profile through every moment<small>it must go red on the base first; a slowed response catches races</small></li>
+          <li>Profiles: default, each flag alone, each override, production, the bug's environment<small>merged only where the code cannot tell them apart</small></li>
+          <li>Every profile through every moment<small>the cell the change fixes must go red on the base first; a slowed response catches races</small></li>
           <li>Cells the test env cannot reach go to QA<small>with the flag values QA needs to set</small></li>
         </ol>
       </div>
@@ -341,7 +341,7 @@
           <use href="#ok" y="210"/><use href="#ok" x="150" y="210"/><use href="#ok" x="300" y="210"/>
           <use href="#ok" y="280"/><use href="#ok" x="150" y="280"/><use href="#ok" x="300" y="280"/>
         </svg>
-        <figcaption>Example run: the code read one flag, price view, set on customer or project, so 3 profiles; 15 of 15 cells pass.</figcaption>
+        <figcaption>Example run: the code read one flag, price view, set on customer or project, so 3 profiles: the default and each override; 15 of 15 cells pass.</figcaption>
       </figure>
     </div>
   </section>
