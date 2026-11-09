@@ -152,13 +152,16 @@ test("isDeniedPath denies a token contained in an organization segment such as a
   assert.equal(isDeniedPath("C:/work/acmecorp/web/x.ts", "acme"), true);
 });
 
-test("isDeniedPath denies nothing when the environment deny list is empty or unset", () => {
+test("isDeniedPath denies secret-looking segments when the environment deny list is unset, and nothing when it is empty", () => {
   const previous = process.env.BULK_READ_DENY_PATHS;
   try {
-    process.env.BULK_READ_DENY_PATHS = "";
-    assert.equal(isDeniedPath("C:/work/acme-web/x.ts"), false);
     delete process.env.BULK_READ_DENY_PATHS;
+    assert.equal(isDeniedPath("/home/me/app/.env.local"), true);
+    assert.equal(isDeniedPath("/home/me/.ssh/id_ed25519"), true);
+    assert.equal(isDeniedPath("C:/work/app/config/credentials.json"), true);
     assert.equal(isDeniedPath("C:/work/acme-web/x.ts"), false);
+    process.env.BULK_READ_DENY_PATHS = "";
+    assert.equal(isDeniedPath("/home/me/app/.env.local"), false);
   } finally {
     if (previous === undefined) delete process.env.BULK_READ_DENY_PATHS;
     else process.env.BULK_READ_DENY_PATHS = previous;

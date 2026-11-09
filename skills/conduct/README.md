@@ -75,7 +75,7 @@ Then:
 1. Install [`superpowers`](https://github.com/obra/superpowers) as its README describes.
 2. Optional event hooks (leg lifecycle into `.conduct/events.ndjson`), once per machine: `node ~/.claude/skills/conduct/scripts/install-hooks.mjs --settings ~/.claude/settings.json --scripts-dir ~/.claude/skills/conduct/scripts`; `--uninstall` reverses it. State lives in `$CONDUCT_HOME` (default `~/.conduct-events`).
 3. Optional guard: start conductor sessions with `claude --settings ~/.claude/skills/conduct/settings/conductor-settings.json`, and set `CONDUCT_SKILL_DIR` if the skill lives elsewhere.
-4. Optional bulk-read: `DEEPSEEK_API_KEY` or `OPENAI_PLATFORM_KEY`, and `BULK_READ_DENY_PATHS` (`;`-separated path tokens, e.g. `acme;client-repo`) for code that must never go to a third-party model. There is no default deny list.
+4. Optional bulk-read: `DEEPSEEK_API_KEY` or `OPENAI_PLATFORM_KEY`, and `BULK_READ_DENY_PATHS` (`;`-separated path tokens, e.g. `acme;client-repo`) for code that must never go to a third-party model. Unset, it denies secret-looking path segments (dotenv files, `.ssh`, `.aws`, `.gnupg`, `secret`, `credential`); setting it replaces that list.
 5. Edit the routing table in `SKILL.md` to the models and CLIs you have.
 
 ## Files

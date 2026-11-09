@@ -17,4 +17,5 @@ references/token-hygiene.md. This file holds the invocation details.
   and warns.
 - Paths with a segment containing any token from `BULK_READ_DENY_PATHS` (`;`-separated,
   case-insensitive, e.g. `acme;client-repo`) are refused with exit 4 before any network call.
-  There is no default deny list: set it to keep client code away from third-party models.
+  Unset, it defaults to `.env;.ssh;.aws;.gnupg;secret;credential`; setting it replaces that list
+  (an empty value denies nothing). Add your client repos to keep their code away from third-party models.

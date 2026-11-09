@@ -52,8 +52,10 @@ const MIN_SECRET_LENGTH = 8;
 const TIMEOUT_MS = 120_000;
 const DEFAULT_MAX_BULLETS = 40;
 
+const DEFAULT_DENY = ".env;.ssh;.aws;.gnupg;secret;credential";
+
 function effectiveDenyList() {
-  return process.env.BULK_READ_DENY_PATHS ?? "";
+  return process.env.BULK_READ_DENY_PATHS ?? DEFAULT_DENY;
 }
 
 export function estimateTokens(text) {
