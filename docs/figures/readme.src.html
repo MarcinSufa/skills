@@ -274,6 +274,11 @@
   .groups > div { display: grid; gap: 12px; align-content: start; }
   .groups .tile b { font-size: clamp(20px, 1.6vw, 26px); }
   [data-figure="skills"] .slide__heading { max-width: none; }
+  [data-figure="skills"] .groups { gap: clamp(14px, 1.6vw, 24px); margin-top: clamp(12px, 2vh, 24px); }
+  [data-figure="skills"] .groups > div { gap: 10px; }
+  [data-figure="skills"] .tile { padding: 12px 18px; gap: 4px; }
+  [data-figure="skills"] .groups .tile b { font-size: clamp(18px, 1.4vw, 22px); }
+  [data-figure="skills"] .tile span { font-size: clamp(15px, 1.05vw, 17px); }
 </style>
 </head>
 <body>
@@ -366,6 +371,7 @@
         <div class="tile"><b>bigfile-guard</b><span>big files may stay, not grow</span></div>
         <div class="tile"><b>i-have-adhd</b><span>answers that start with the next action</span></div>
         <div class="tile"><b>conduct</b><span>models from several vendors implement and review</span></div>
+        <div class="tile"><b>docs-vs-code-precedence</b><span>stale docs lose to the existing code</span></div>
       </div>
       <div>
         <p class="case__trigger">Before the merge</p>
@@ -461,6 +467,34 @@
           <p>About 15 minutes if tests cover this. An afternoon if not.</p>
         </div>
         <figcaption>10 output rules and a pre-send check. Adapted from ayghri/i-have-adhd (MIT).</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="slide" data-figure="docs-vs-code-precedence">
+    <div class="split split--even split--review">
+      <div>
+        <p class="slide__label">docs-vs-code-precedence</p>
+        <h2 class="slide__heading">When the instruction file and the code disagree, the code wins</h2>
+        <ul class="points">
+          <li><b>One sentence</b> in CLAUDE.md or AGENTS.md</li>
+          <li><b>Follows the code</b> already in the repo</li>
+          <li><b>Names each conflict</b> in the final reply</li>
+          <li><b>Process rules stay</b>: gates, commit signing</li>
+        </ul>
+      </div>
+      <figure>
+        <div class="chat">
+          <p class="chat__you"><b>task</b>add a test for the price parser</p>
+          <dl class="chat__kv">
+            <dt>CLAUDE.md</dt><dd>"write tests with unittest"</dd>
+            <dt>code</dt><dd>every existing test uses pytest</dd>
+          </dl>
+          <p class="chat__head">Final reply</p>
+          <p class="chat__rewrite">Added a pytest test, like the existing ones. CLAUDE.md says unittest; the code uses pytest.</p>
+          <p class="chat__head chat__head--go">followed the code: 69 of 76 (was 11)</p>
+        </div>
+        <figcaption>Shortened example. 69 of 76 choices followed the code with the sentence, 11 of 76 without: a replication of Xu and Wu (arXiv 2610.30571) on 18 small Python projects, Claude Code, 1 run per condition.</figcaption>
       </figure>
     </div>
   </section>
