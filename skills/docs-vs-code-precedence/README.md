@@ -44,9 +44,9 @@ add_rule() {
   fi
   echo "added to $f"
 }
-add_rule ~/.claude/CLAUDE.md   # user level, Claude Code
-add_rule ~/.codex/AGENTS.md    # user level, Codex
-add_rule CLAUDE.md             # repo level, run from the repo root
+add_rule ~/.claude/CLAUDE.md                        # user level, Claude Code
+add_rule "${CODEX_HOME:-$HOME/.codex}/AGENTS.md"   # user level, Codex
+add_rule CLAUDE.md                                  # repo level, run from the repo root
 ```
 
 Windows (PowerShell):
@@ -67,7 +67,8 @@ function Add-Rule($Path) {
   "added to $Path"
 }
 Add-Rule "$HOME\.claude\CLAUDE.md"   # user level, Claude Code
-Add-Rule "$HOME\.codex\AGENTS.md"    # user level, Codex
+$codex = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { "$HOME\.codex" }
+Add-Rule "$codex\AGENTS.md"         # user level, Codex
 Add-Rule "CLAUDE.md"                 # repo level, run from the repo root
 ```
 
@@ -83,12 +84,15 @@ cp -r skills/skills/docs-vs-code-precedence ~/.claude/skills/
 ## Verify
 
 ```bash
-grep -F "follow the conventions used in the existing code" ~/.claude/CLAUDE.md ~/.codex/AGENTS.md CLAUDE.md
+grep -F "follow the conventions used in the existing code" ~/.claude/CLAUDE.md "${CODEX_HOME:-$HOME/.codex}/AGENTS.md" CLAUDE.md
 ```
 
 ```powershell
-Select-String -SimpleMatch -Pattern "follow the conventions used in the existing code" -Path "$HOME\.claude\CLAUDE.md", "$HOME\.codex\AGENTS.md", "CLAUDE.md"
+$codex = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { "$HOME\.codex" }
+Select-String -SimpleMatch -Pattern "follow the conventions used in the existing code" -Path "$HOME\.claude\CLAUDE.md", "$codex\AGENTS.md", "CLAUDE.md"
 ```
+
+List only the files you added the sentence to (`AGENTS.md` instead of `CLAUDE.md` for a repo that uses it). Each one should print the sentence.
 
 Then start a new Claude Code or Codex session. A session that is already open loaded the old file.
 
