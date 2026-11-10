@@ -3,7 +3,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/skills-dark.png">
-    <img alt="Agent skills that make the agent check its own work. Before the work: start, worktree, verify-env. While it works: supply-chain-guard, bigfile-guard, i-have-adhd, conduct. Before the merge: risk-code-review, flag-matrix, explain-gate. After the merge: promote-lessons." src="docs/assets/skills-light.png" width="880">
+    <img alt="Agent skills that make the agent check its own work. Before the work: start, worktree, verify-env. While it works: supply-chain-guard, bigfile-guard, i-have-adhd, conduct, docs-vs-code-precedence. Before the merge: risk-code-review, flag-matrix, explain-gate. After the merge: promote-lessons." src="docs/assets/skills-light.png" width="880">
   </picture>
 </p>
 
@@ -31,6 +31,7 @@ Agent skills for Claude Code (they also work in other agents that read `SKILL.md
 | [supply-chain-guard](skills/supply-chain-guard/README.md) | Release cooldown for package managers plus a hook that diffs what an install would add | own |
 | [bigfile-guard](skills/bigfile-guard/README.md) | Flags staged text files over about 5000 tokens that are new or grew, so agents can read files whole | own |
 | [i-have-adhd](skills/i-have-adhd/README.md) | Answers shaped for an ADHD reader: next action first, numbered steps, no filler | adapted from ayghri (MIT) |
+| [docs-vs-code-precedence](skills/docs-vs-code-precedence/README.md) | One sentence in CLAUDE.md or AGENTS.md: when the docs and the existing code disagree, follow the code and name each conflict | own; sentence from Xu and Wu, [arXiv 2610.30571](https://arxiv.org/abs/2610.30571) |
 
 ### Before the merge
 
