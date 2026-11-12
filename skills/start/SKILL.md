@@ -33,10 +33,13 @@ Read the roster file the user's CLAUDE.md points to (the same file `risk-code-re
 | --- | --- |
 | solo | the worker implements in one worktree; the reviewer reviews |
 | fan-out | the conductor splits the task into independent parts, one worker per worktree in parallel, then merges in order |
+| variants | N workers on the same task, one worktree each; the user picks a diff; no merge |
 | consensus | three models (at least two vendors) answer each open design decision independently; still split after round 2 (each sees the others' answers), the conductor decides and records the split |
 | review | the task is a PR or branch: skip stages 2 to 4 and the verify part of stage 5; stage 5's `risk-code-review` is the one review |
 
-A task can override the default: `@start --fan-out <task>`, `@start --consensus <task>`, `@start --review <PR# or branch>`.
+A task can override the default: `@start --fan-out <task>`, `@start --consensus <task>`, `@start --review <PR# or branch>`, `@start --variants 2|3 <task>`, `@start --retry <step>:<N> <task>` (default `implement:2` when a gate exists), and `@start --budget <USD> <task>`.
+
+Retry-to-step, the USD helper, and variants are planned in Fractal; variants also need the missing `startSession` block. Fractal v0 runs only bundled Playbooks, so conduct applies these fields by hand. A variant hand-off shows the diffs and waits for the user's choice; it never merges. Example: `@start --variants 2 --budget 5 <task>`.
 
 ## Stages
 
@@ -47,6 +50,6 @@ A task can override the default: `@start --fan-out <task>`, `@start --consensus 
 5. **Verify and review.** `superpowers:verification-before-completion` [run the build and tests and show their output] before claiming done. UI change: a committed e2e spec and a before/after film. Stubs of external APIs copy real recorded responses, redacted. A "known limit" or "needs backend" is reported only with a probe of the provider's alternative endpoints and its numbers; otherwise it is an open bug. A changed file the project's flag catalog lists as a reader of a flag or config setting: run `flag-matrix` [list each flag value and check the change under it by hand, or say it was not checked]. Work back from QA: a bug fix also fixes the harness that let it through. Then `risk-code-review` on the final tree with the team's reviewer [without the skill: the roster's tier table, if it has one, sets the depth; otherwise a fresh subagent and the team's reviewer each review the diff against the ticket; the hand-off lists their findings]: tier, door, P0 / Proof, fix rounds and the PR body section live there.
 6. **Lessons.** `promote-lessons` [nothing to run] runs as a periodic curation pass, not per task; at hand-off, name any correction the user gave during the run so the queue holds it.
 
-Stops that stay: the stage 0 and stage 2 answers when those stages ask, a cost gate before any paid batch run, approval to commit or push.
+Stops that stay: the stage 0 and stage 2 answers when those stages ask, a cost gate before any paid batch run, a variant choice, a budget refusal, approval to commit or push.
 
 Fast path: a trivial single-file edit (under ~30 lines) skips stage 2 and stage 3's `conduct`, so conduct's never-implement rule does not apply: the driving session writes it directly. Stage 5 still runs.
