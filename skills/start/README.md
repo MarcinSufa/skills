@@ -24,10 +24,13 @@
 | **Stops for you** | the setup and clarify answers, a cost gate, a variant choice, a budget refusal, and approval to commit or push |
 | **Never** | builds a parallel fix when someone else's branch or PR already covers the ticket, or routes around a blocking hook |
 
-`@fractal/playbook` implements retry-to-step (`runSequence`, per-step `onFail`) and a USD ceiling (pure helpers and
-the `runSequence` budget option with `SpendSource`, tested with a fake source). `@start` still applies its flags by
-hand; the Control `SpendSource` adapter, `PlaybookStartRunRequest.budget`, Fractal budget raise approval, and
-variants remain planned.
+`--variants 2|3` opens N separate git worktrees, one branch each, and runs the same task in each. Show the diffs side by side and wait for the operator to pick one; never auto-merge. A judge or reviewer verdict is a recommendation only, and leave unpicked worktrees for the operator to remove.
+
+`--retry <step>:<N>` returns to the named step when a named gate or step fails and runs from there up to N times, rather than restarting the whole pipeline. The default is `implement:2` when a gate exists. After N failed retries, stop and report to the operator.
+
+`--budget <USD>` requires a manual cost check before each next attempt, including implementation, a retry, or another variant. Check session cost such as `/cost`, vendor usage pages, or the operator's stated spend, and compare it with the budget. If the remaining budget cannot cover the next attempt, stop and ask the operator; never start a new attempt once the budget is reached.
+
+If a playbook backend such as Fractal is available, it may enforce retry and budget automatically; otherwise apply the flags by hand as described here. Example: `@start --variants 2 --budget 5 <task>`.
 
 ## Why
 

@@ -39,7 +39,13 @@ Read the roster file the user's CLAUDE.md points to (the same file `risk-code-re
 
 A task can override the default: `@start --fan-out <task>`, `@start --consensus <task>`, `@start --review <PR# or branch>`, `@start --variants 2|3 <task>`, `@start --retry <step>:<N> <task>` (default `implement:2` when a gate exists), and `@start --budget <USD> <task>`.
 
-`@fractal/playbook` implements retry-to-step with `runSequence` and per-step `onFail`, plus a USD ceiling helper and `runSequence` budget option using `SequenceBudget` and `SpendSource`; its tests use a fake spend source. Fractal v0 runs only bundled Playbooks, so `@start` still applies `--retry`, `--budget`, and `--variants` by hand. The Control `SpendSource` adapter, `PlaybookStartRunRequest.budget`, Fractal budget raise approval, and variants remain planned. Variants need a `startSession` block. The planned flow uses separate worktrees, shows the diffs for the operator to pick manually, and never auto-merges. Any judge is a recommendation only. Example: `@start --variants 2 --budget 5 <task>`.
+`--variants 2|3` opens N separate git worktrees, one branch each, and runs the same task in each. Show the diffs side by side and wait for the operator to pick one; never auto-merge. A judge or reviewer verdict is a recommendation only, and leave unpicked worktrees for the operator to remove.
+
+`--retry <step>:<N>` returns to the named step when a named gate or step fails and runs from there up to N times, rather than restarting the whole pipeline. The default is `implement:2` when a gate exists. After N failed retries, stop and report to the operator.
+
+`--budget <USD>` requires a manual cost check before each next attempt, including implementation, a retry, or another variant. Check session cost such as `/cost`, vendor usage pages, or the operator's stated spend, and compare it with the budget. If the remaining budget cannot cover the next attempt, stop and ask the operator; never start a new attempt once the budget is reached.
+
+If a playbook backend such as Fractal is available, it may enforce retry and budget automatically; otherwise apply the flags by hand as described here. Example: `@start --variants 2 --budget 5 <task>`.
 
 ## Stages
 
