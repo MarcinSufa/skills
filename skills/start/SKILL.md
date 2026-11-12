@@ -34,10 +34,21 @@ Read the roster file the user's CLAUDE.md points to (the same file `risk-code-re
 | --- | --- |
 | solo | the worker implements in one worktree; the reviewer reviews |
 | fan-out | the conductor splits the task into independent parts, one worker per worktree in parallel, then merges in order (rules below) |
+| variants | N workers run the same task in separate git worktrees; the operator picks manually; never auto-merge |
 | consensus | stage 2 puts each open design decision to three models and the conductor decides (rules below); stage 3 then builds as solo |
 | review | the task is a PR or branch: skip stages 2 to 4 and the verify part of stage 5; stage 5's `risk-code-review` is the one review |
 
-A task can override the default: `@start --fan-out <task>`, `@start --consensus <task>`, `@start --review <PR# or branch>`.
+A task can override the default: `@start --fan-out <task>`, `@start --consensus <task>`, `@start --review <PR# or branch>`, `@start --variants 2|3 <task>`, `@start --retry <step>:<N> <task>` (default `implement:2` when a gate exists), and `@start --budget <USD> <task>`.
+
+`--variants 2|3` opens N separate git worktrees, one branch each, and runs the same task in each. Show the diffs side by side and wait for the operator to pick one; never auto-merge. A judge or reviewer verdict is a recommendation only, and leave unpicked worktrees for the operator to remove.
+
+`--retry <step>:<N>` returns to the named step when a named gate or step fails and retries that failed step up to N times, rather than restarting the whole pipeline. The default is `implement:2` when a gate exists. After N failed retries, stop and report to the operator.
+
+By default, enforce `--retry` manually: count retries at the named step and stop after N failed retries.
+
+By default, enforce `--budget <USD>` manually before each next attempt, including implementation, a retry, or another variant: compare the amount already spent plus the estimated cost of the next attempt with the ceiling, and stop before the next attempt once the ceiling is reached or the estimated total would exceed it.
+
+An optional backend may provide retry and budget enforcement. Skip a manual check only after verifying that the active backend enforces that limit for this run; for example, it shows the retry ceiling and refuses an extra retry, or shows the budget ceiling and refuses an over-budget attempt. If enforcement cannot be verified, keep the manual check. Example: `@start --variants 2 --budget 5 <task>`.
 
 **Fan-out rules.** Parallel workers multiply token use, and they only pay off when the parts do not depend on each other.
 - Use it only when the task splits into 2 to 4 parts that touch disjoint files and need no result from each other. Otherwise say why and run solo.
