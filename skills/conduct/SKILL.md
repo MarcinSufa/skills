@@ -124,6 +124,8 @@ Apply on every worker leg, in order. Measurements and full rules: references/tok
 
 ## Routing table (v1)
 
+A team named by the caller (a brief, the `start` skill, the user's roster file) takes precedence over this table: use its worker and reviewer for the rows they cover, and this table only for what the team leaves open. The models below are one working setup, not a requirement; a model you cannot run is replaced by another of the same class, as long as the independence rule above still holds. A decision record handed in by the caller counts as a prior decision for the Opinion stage.
+
 | Task class | Worker | Transport |
 |---|---|---|
 | Orchestration: specs, briefs, dispatch, adjudication, fix triage, synthesis | **You (the conductor)** | the driving session |
