@@ -1,6 +1,6 @@
 {
   "name": "marcinsufa-skills",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Agent skills for review, testing and safety: risk-tiered code review, flag x moment matrix, supply-chain and big-file guards, worktrees, and an @start pipeline.",
   "author": {
     "name": "Marcin Sufa",
