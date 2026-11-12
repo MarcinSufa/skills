@@ -28,7 +28,7 @@ Read the roster file the user's CLAUDE.md points to (the same file `risk-code-re
    ```
    No roster file: create it at the answered path, then tell the user to point their CLAUDE.md at it.
    The Reviewer row is the other-vendor reviewer `risk-code-review` adds; its tier table (or the roster's) still decides how many reviewers run and at which depth.
-4. A named model that cannot run (quota, payment error, timeout) is swapped for the next one from another vendor (a reviewer never from the worker's vendor); the hand-off names the swap and the error. Ask again only on `@start setup`.
+4. A named model that cannot run (quota, payment error, timeout) is swapped for the next one from another vendor (a reviewer never from the worker's vendor); the hand-off names the swap and the error. Ask again only on `@start setup`; with no task after it, `@start setup` ends once the section is written and shown.
 
 | Strategy | Stage 3 runs as |
 | --- | --- |
