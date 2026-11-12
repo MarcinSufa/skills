@@ -51,6 +51,7 @@ Agent skills for Claude Code (they also work in other agents that read `SKILL.md
 
 Skills by other authors that this setup uses, installed from their sources:
 
+- [pstack](https://github.com/cursor/plugins/tree/main/pstack) by poteto (MIT): `poteto-mode`, `sharpen`, `blast-radius`, `correct`, `arena` and the engineering principle skills. `start` borrows its sharpen stage and `risk-code-review` its proven safety fact. Install with `/plugin marketplace add cursor/plugins`, then `/plugin install pstack@cursor-plugins`.
 - [mattpocock/skills](https://github.com/mattpocock/skills) (MIT): `grilling`, `diagnosing-bugs`, `resolving-merge-conflicts`, `to-questionnaire`, `wait-what`, `writing-for-agents`.
 - [visual-explainer](https://github.com/nicobailon/visual-explainer) (MIT): self-contained HTML pages built around figures.
 - [graphify](https://github.com/Graphify-Labs/graphify) (Apache-2.0): code, docs and media to a queryable knowledge graph.
