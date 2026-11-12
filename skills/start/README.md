@@ -26,11 +26,11 @@
 
 `--variants 2|3` opens N separate git worktrees, one branch each, and runs the same task in each. Show the diffs side by side and wait for the operator to pick one; never auto-merge. A judge or reviewer verdict is a recommendation only, and leave unpicked worktrees for the operator to remove.
 
-`--retry <step>:<N>` returns to the named step when a named gate or step fails and runs from there up to N times, rather than restarting the whole pipeline. The default is `implement:2` when a gate exists. After N failed retries, stop and report to the operator.
+`--retry <step>:<N>` returns to the named step when a named gate or step fails and retries that failed step up to N times, rather than restarting the whole pipeline. The default is `implement:2` when a gate exists. After N failed retries, stop and report to the operator.
 
 By default, enforce `--retry` manually: count retries at the named step and stop after N failed retries.
 
-By default, enforce `--budget <USD>` manually before each next attempt, including implementation, a retry, or another variant: compare the amount already spent plus the estimated cost of the next attempt with the ceiling, and stop before any attempt that would exceed it.
+By default, enforce `--budget <USD>` manually before each next attempt, including implementation, a retry, or another variant: compare the amount already spent plus the estimated cost of the next attempt with the ceiling, and stop before the next attempt once the ceiling is reached or the estimated total would exceed it.
 
 An optional backend may provide retry and budget enforcement. Skip a manual check only after verifying that the active backend enforces that limit for this run; for example, it shows the retry ceiling and refuses an extra retry, or shows the budget ceiling and refuses an over-budget attempt. If enforcement cannot be verified, keep the manual check. Example: `@start --variants 2 --budget 5 <task>`.
 

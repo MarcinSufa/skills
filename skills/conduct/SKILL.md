@@ -124,6 +124,10 @@ Apply on every worker leg, in order. Measurements and full rules: references/tok
 
 ## Routing table (v1)
 
+A team named by the caller (a brief, the `start` skill, the user's roster file) takes precedence over this table: its worker takes the implementation rows and its reviewer is the cross-vendor review leg; this table fills only what the team leaves open. The independence rule above binds the caller's team too: a team whose reviewer or gate author shares the worker's vendor family is rejected back to the caller, not run. The loop's whole-branch review stays and is an extra leg, never the independent one. The models below are one working setup, not a requirement; a model you cannot run is replaced by another of the same class, as long as the independence rule still holds.
+
+A decision record handed in by the caller skips the Opinion stage for the question it settles, with or without a memory sink, when it names answers from at least two vendors and a decision; Fusion still writes it into the fusion doc. Questions it does not cover get the Opinion stage as usual.
+
 | Task class | Worker | Transport |
 |---|---|---|
 | Orchestration: specs, briefs, dispatch, adjudication, fix triage, synthesis | **You (the conductor)** | the driving session |
