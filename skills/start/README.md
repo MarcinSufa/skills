@@ -19,10 +19,15 @@
 | --- | --- |
 | **Fires** | when you type `@start <task>`; the later stages start themselves |
 | **First use** | asks once for conductor, worker and reviewer models (from the CLIs it finds) and a default strategy, saved in your roster file; `@start setup` asks again |
-| **Strategies** | solo, fan-out (parallel workers on separate parts), variants (parallel workers on the same task; user picks a diff, no merge), consensus (three models, two rounds, then the conductor decides), review (an existing PR by risk tier) |
+| **Strategies** | solo, fan-out (parallel workers on separate parts), variants (separate worktrees; operator picks manually; never auto-merge; any judge is a recommendation only), consensus (three models, two rounds, then the conductor decides), review (an existing PR by risk tier) |
 | **First output** | four one-line answers and your prompt rewritten, before any tool call (the team setup comes right after) |
 | **Stops for you** | the setup and clarify answers, a cost gate, a variant choice, a budget refusal, and approval to commit or push |
 | **Never** | builds a parallel fix when someone else's branch or PR already covers the ticket, or routes around a blocking hook |
+
+`@fractal/playbook` implements retry-to-step (`runSequence`, per-step `onFail`) and a USD ceiling (pure helpers and
+the `runSequence` budget option with `SpendSource`, tested with a fake source). `@start` still applies its flags by
+hand; the Control `SpendSource` adapter, `PlaybookStartRunRequest.budget`, Fractal budget raise approval, and
+variants remain planned.
 
 ## Why
 

@@ -33,13 +33,13 @@ Read the roster file the user's CLAUDE.md points to (the same file `risk-code-re
 | --- | --- |
 | solo | the worker implements in one worktree; the reviewer reviews |
 | fan-out | the conductor splits the task into independent parts, one worker per worktree in parallel, then merges in order |
-| variants | N workers on the same task, one worktree each; the user picks a diff; no merge |
+| variants | N workers on the same task in separate worktrees; operator picks manually; never auto-merge; any judge is a recommendation only |
 | consensus | three models (at least two vendors) answer each open design decision independently; still split after round 2 (each sees the others' answers), the conductor decides and records the split |
 | review | the task is a PR or branch: skip stages 2 to 4 and the verify part of stage 5; stage 5's `risk-code-review` is the one review |
 
 A task can override the default: `@start --fan-out <task>`, `@start --consensus <task>`, `@start --review <PR# or branch>`, `@start --variants 2|3 <task>`, `@start --retry <step>:<N> <task>` (default `implement:2` when a gate exists), and `@start --budget <USD> <task>`.
 
-Retry-to-step, the USD helper, and variants are planned in Fractal; variants also need the missing `startSession` block. Fractal v0 runs only bundled Playbooks, so conduct applies these fields by hand. A variant hand-off shows the diffs and waits for the user's choice; it never merges. Example: `@start --variants 2 --budget 5 <task>`.
+`@fractal/playbook` implements retry-to-step with `runSequence` and per-step `onFail`, plus a USD ceiling helper and `runSequence` budget option using `SequenceBudget` and `SpendSource`; its tests use a fake spend source. Fractal v0 runs only bundled Playbooks, so `@start` still applies `--retry`, `--budget`, and `--variants` by hand. The Control `SpendSource` adapter, `PlaybookStartRunRequest.budget`, Fractal budget raise approval, and variants remain planned. Variants need a `startSession` block. The planned flow uses separate worktrees, shows the diffs for the operator to pick manually, and never auto-merges. Any judge is a recommendation only. Example: `@start --variants 2 --budget 5 <task>`.
 
 ## Stages
 
