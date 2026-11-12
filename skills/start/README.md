@@ -28,9 +28,11 @@
 
 `--retry <step>:<N>` returns to the named step when a named gate or step fails and runs from there up to N times, rather than restarting the whole pipeline. The default is `implement:2` when a gate exists. After N failed retries, stop and report to the operator.
 
-`--budget <USD>` requires a manual cost check before each next attempt, including implementation, a retry, or another variant. Check session cost such as `/cost`, vendor usage pages, or the operator's stated spend, and compare it with the budget. If the remaining budget cannot cover the next attempt, stop and ask the operator; never start a new attempt once the budget is reached.
+By default, enforce `--retry` manually: count retries at the named step and stop after N failed retries.
 
-If a playbook backend such as Fractal is available, it may enforce retry and budget automatically; otherwise apply the flags by hand as described here. Example: `@start --variants 2 --budget 5 <task>`.
+By default, enforce `--budget <USD>` manually before each next attempt, including implementation, a retry, or another variant: compare the amount already spent plus the estimated cost of the next attempt with the ceiling, and stop before any attempt that would exceed it.
+
+An optional backend may provide retry and budget enforcement. Skip a manual check only after verifying that the active backend enforces that limit for this run; for example, it shows the retry ceiling and refuses an extra retry, or shows the budget ceiling and refuses an over-budget attempt. If enforcement cannot be verified, keep the manual check. Example: `@start --variants 2 --budget 5 <task>`.
 
 ## Why
 
