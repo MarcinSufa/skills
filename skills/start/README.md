@@ -19,10 +19,20 @@
 | --- | --- |
 | **Fires** | when you type `@start <task>`; the later stages start themselves |
 | **First use** | asks once for conductor, worker and reviewer models (from the CLIs it finds) and a default strategy, saved in your roster file; `@start setup` asks again |
-| **Strategies** | solo, fan-out (parallel workers), consensus (three models, two rounds, then the conductor decides), review (an existing PR by risk tier) |
+| **Strategies** | solo, fan-out (parallel workers on separate parts), variants (separate worktrees; operator picks manually; never auto-merge; any judge is a recommendation only), consensus (three models, two rounds, then the conductor decides), review (an existing PR by risk tier) |
 | **First output** | four one-line answers and your prompt rewritten, before any tool call (the team setup comes right after) |
-| **Stops for you** | the setup and clarify answers, a cost gate, and approval to commit or push |
+| **Stops for you** | the setup and clarify answers, a cost gate, a variant choice, a budget refusal, and approval to commit or push |
 | **Never** | builds a parallel fix when someone else's branch or PR already covers the ticket, or routes around a blocking hook |
+
+`--variants 2|3` opens N separate git worktrees, one branch each, and runs the same task in each. Show the diffs side by side and wait for the operator to pick one; never auto-merge. A judge or reviewer verdict is a recommendation only, and leave unpicked worktrees for the operator to remove.
+
+`--retry <step>:<N>` returns to the named step when a named gate or step fails and retries that failed step up to N times, rather than restarting the whole pipeline. The default is `implement:2` when a gate exists. After N failed retries, stop and report to the operator.
+
+By default, enforce `--retry` manually: count retries at the named step and stop after N failed retries.
+
+By default, enforce `--budget <USD>` manually before each next attempt, including implementation, a retry, or another variant: compare the amount already spent plus the estimated cost of the next attempt with the ceiling, and stop before the next attempt once the ceiling is reached or the estimated total would exceed it.
+
+An optional backend may provide retry and budget enforcement. Skip a manual check only after verifying that the active backend enforces that limit for this run; for example, it shows the retry ceiling and refuses an extra retry, or shows the budget ceiling and refuses an over-budget attempt. If enforcement cannot be verified, keep the manual check. Example: `@start --variants 2 --budget 5 <task>`.
 
 ## Why
 
@@ -53,7 +63,7 @@ flowchart TD
 ```
 
 - **1 · Sharpen.** Four answers: what a top expert would add, the rawest material they would start from, their tools beyond reasoning, and what outside the model shows the result is right. For a bug, each thing the reporter saw becomes an assertion with its expected value from the reporter's material, not from the code.
-- **0 · Team and strategy** (right after sharpen's first output). Read once from the roster file your `CLAUDE.md` points to (the one `risk-code-review` reads). Missing: the skill checks which of `claude`, `codex`, `gemini`, `grok`, `cursor-agent` run, asks you to pick the conductor, worker, reviewer and default strategy, and writes a `## Team and strategy` table there. A task can override the strategy with `--fan-out`, `--consensus` or `--review`.
+- **0 · Team and strategy** (right after sharpen's first output). Read once from the roster file your `CLAUDE.md` points to (the one `risk-code-review` reads). Missing: the skill checks which of `claude`, `codex`, `gemini`, `grok`, `cursor-agent` run, asks you to pick the conductor, worker, reviewer and default strategy, and writes a `## Team and strategy` table there. A task can override the strategy with `--fan-out`, `--consensus`, `--review`, `--variants 2|3`, `--retry <step>:<N>` or `--budget <USD>`.
 - **2 · Clarify.** Open architecture or product questions, or scope growth, go into one coded questionnaire through the `grilling` skill. Nothing open: no question.
 - **3 · Implement.** First `git fetch`, then search every remote's commit messages, branch names and PRs for the ticket; someone else's work stops the run. Substantive work goes to `worktree` and `conduct` with your team: the worker writes, the conductor briefs and adjudicates, and the reviewer is never the worker's vendor. A trivial single-file edit is written directly.
 - **4 · Gates.** Hooks run on their own; a block is reported.
