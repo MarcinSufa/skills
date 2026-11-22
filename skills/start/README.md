@@ -37,8 +37,10 @@ flowchart TD
   S0 -- no --> T["detect CLIs, ask once:<br/>conductor, worker,<br/>reviewer, strategy"]
   T --> S2
   S0 -- yes --> S2{"<b>2 · Clarify</b><br/>open questions?"}
-  S2 -- yes --> Q["One coded questionnaire,<br/>max 5 items, wait;<br/>architectural: system-design,<br/>doc accepted first"]
+  S2 -- yes --> Q["One coded questionnaire,<br/>max 5 items, wait"]
+  S2 -- architectural --> SD["system-design:<br/>grill, doc, review;<br/>you accept the doc"]
   Q --> S3
+  SD --> S3
   S2 -- no --> S3["<b>3 · Implement</b><br/>check nobody else is on it,<br/>worktree, worker + reviewer"]
   S3 --> S4["<b>4 · Gates</b><br/>hooks block, never bypassed"]
   S4 --> S5["<b>5 · Verify + review</b><br/>evidence, e2e + film for UI,<br/>flag matrix, risk-code-review"]
@@ -48,7 +50,7 @@ flowchart TD
   classDef step fill:#fff7ed,stroke:#f97316,color:#431407
   classDef ask fill:#ffffff,stroke:#f97316,color:#431407
   class IN,S6 io
-  class S1,T,Q,S3,S4,S5 step
+  class S1,T,Q,SD,S3,S4,S5 step
   class S0,S2 ask
 ```
 
@@ -60,7 +62,7 @@ flowchart TD
 - **5 · Verify and review.** Verification before claiming done. A UI change gets a committed e2e spec and a before/after film. Stubs of external APIs copy recorded responses, redacted. Code that reads a config flag gets a flag x moment matrix. Then `risk-code-review` on the final tree.
 - **6 · Lessons.** `promote-lessons` runs as a periodic pass that turns queued corrections into rules and skill edits, not per task.
 
-**Fast path:** a trivial single-file edit (under about 30 lines) skips stages 2 and 3's orchestration; stage 5 still runs.
+**Fast path:** a trivial single-file edit (under about 30 lines) skips stages 2 and 3's orchestration, unless it is architectural; stage 5 still runs.
 
 ## Install
 

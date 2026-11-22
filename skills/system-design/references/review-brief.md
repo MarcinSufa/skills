@@ -16,7 +16,7 @@ For each finding give: lens, severity (blocker: the design is wrong or cannot be
 
 Commands, read-only, prompt in a file:
 
-- Claude author, Codex reviewer: `codex exec --sandbox read-only "$(cat brief.txt)"`
-- Codex author, Claude reviewer: `claude -p --permission-mode plan "$(cat brief.txt)"`
+- Claude author, Codex reviewer: `codex exec --sandbox read-only "$(cat brief.txt)" < /dev/null` (without `< /dev/null` it waits on stdin; outside a git repo add `--skip-git-repo-check`)
+- Codex author, Claude reviewer: `claude -p --permission-mode plan "$(cat brief.txt)" < /dev/null`
 
-Use the model the user's roster names for the reviewer role when there is one.
+Add `-m <model>` to pick the model. A roster or config that names a reviewer model: use it when its vendor differs from the author's; otherwise take that roster's model from another vendor, and name the swap in the review log.

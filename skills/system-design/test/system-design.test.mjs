@@ -47,3 +47,15 @@ test('start stage 2 hands architectural tasks to system-design', () => {
   assert.match(stage2, /`system-design`/);
   assert.match(stage2, /accepts its design doc/);
 });
+
+test('start fast path never skips system-design for an architectural task', () => {
+  const start = readFileSync(join(SKILL, '..', 'start', 'SKILL.md'), 'utf8');
+  const fast = start.split('\n').find((l) => l.startsWith('Fast path:'));
+  assert.match(fast, /architectural task[^.]*never takes the fast path/);
+});
+
+test('ordinary tasks keep the 5-item questionnaire', () => {
+  const start = readFileSync(join(SKILL, '..', 'start', 'SKILL.md'), 'utf8');
+  const stage2 = start.split('\n').find((l) => l.startsWith('2. **Clarify.**'));
+  assert.match(stage2, /Other open architecture or product questions[^.]*max 5 items/);
+});

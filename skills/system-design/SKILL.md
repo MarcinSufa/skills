@@ -25,7 +25,7 @@ Every phase works against these sections; their order is the order of the doc.
 12. **Verification plan and definition of done**: the tests, load tests, metrics and alerts that prove each requirement, each tied to a section above.
 13. **Open questions**: what is still undecided, with an owner.
 
-A section is **settled** when it holds an answer from the user, a fact from the code (cited as `file:line`), or an **assumption** labelled `Assumption:` with the value used. "Not applicable" is a settled answer when it carries one line of why.
+A section is **settled** when it holds an answer from the user, a decision record from a model panel the user ran (cited, with its dissents), a fact from the code (cited as `file:line`), or an **assumption** labelled `Assumption:` with the value used. "Not applicable" is a settled answer when it carries one line of why.
 
 ## Phase 1: Grill
 
@@ -35,7 +35,7 @@ Walk the design tree with the `grilling` skill [not installed: the same method, 
 - **No item cap.** The tree is as deep as the design needs.
 - **Facts come from the code, not the user.** Before asking, look: existing services, schemas, configs, traffic dashboards in the repo, prior docs in `docs/designs/` and ADRs. A question the code answers is answered, with the `file:line`, and never asked. Decisions (scope, trade-offs, SLOs, budget) stay the user's.
 - **Batch mode**, only when the user asks for it (async, "send all questions at once"): one coded questionnaire `Q1..Qn` covering every open question whose prerequisites are settled, each with a recommended answer; the user replies by code. Repeat for the questions the answers unblocked.
-- A user who says "use your recommendation" or "skip" settles that question as an assumption.
+- A user who says "use your recommendation" or "skip" settles that question as an assumption. Said for all questions: settle each remaining one with your recommendation, without waiting, and still list them before drafting.
 
 Phase 1 is done when every section of the template is settled. List the sections and how each was settled (user, code, assumption) before drafting.
 
@@ -47,11 +47,11 @@ Phase 1 is done when every section of the template is settled. List the sections
 4. Deep dives pick the 2 or 3 parts where a wrong choice costs the most to undo; name why each was picked.
 5. **ADR** only for a decision that is hard to reverse, surprising without context, and the outcome of a real trade-off: a short file in the repo's ADR folder [none: `docs/adr/NNNN-<slug>.md`] with context, decision, consequences, linked from the doc. Every other decision lives in the doc only.
 
-Phase 2 is done when all 13 sections are filled and the mermaid block is valid syntax.
+Phase 2 is done when all 13 sections are filled and the mermaid block renders (`mmdc` when installed; otherwise say it was checked by reading only).
 
 ## Phase 3: Review
 
-1. Pick the reviewer: a model from a different vendor than the author (a Claude author gets a Codex/GPT reviewer, a Codex/GPT author gets a Claude reviewer), run headless and read-only, with **fresh context**: it gets the doc path, the repo and the brief in [`references/review-brief.md`](references/review-brief.md), never this conversation. No other vendor can run: a fresh subagent of the same vendor, and the doc header says so.
+1. Pick the reviewer: a model from a different vendor than the author (a Claude author gets a Codex/GPT reviewer, a Codex/GPT author gets a Claude reviewer), run headless and read-only, with **fresh context**: it gets the doc path, the repo and the brief in [`references/review-brief.md`](references/review-brief.md), never this conversation. No other vendor can run: a fresh subagent of the same vendor, the one exception to the vendor rule; the doc header and the acceptance message both say so.
 2. The reviewer checks four lenses (completeness, YAGNI, failure modes, implementation readiness) and rates each finding `blocker`, `major` or `minor`.
 3. Verify each `blocker` and `major` yourself against the doc and the code. A finding that holds goes back: a missing decision to Phase 1 as a question, a gap in the text to Phase 2. A finding that does not hold gets one line of why in the review log. `minor` findings go to Open questions or are fixed in place.
 4. Round 2 runs on the revised doc with a new fresh reviewer. There is no round 3: findings still open after round 2 go to the user, listed.

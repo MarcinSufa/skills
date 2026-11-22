@@ -52,10 +52,11 @@ The review lenses: completeness, YAGNI, failure modes, implementation readiness.
 
 ```bash
 git clone https://github.com/MarcinSufa/skills
-cp -r skills/skills/system-design ~/.claude/skills/
+cp -r skills/skills/system-design ~/.claude/skills/   # Claude Code
+cp -r skills/skills/system-design ~/.codex/skills/    # Codex
 ```
 
-Works alone in Claude Code or Codex. With `grilling` installed it drives the questions through it; without, it runs the same method itself. The review step needs a second vendor's CLI (`codex` or `claude`); without one it uses a fresh subagent and says so in the doc.
+Works alone in Claude Code or Codex. With `grilling` installed it drives the questions through it; without, it runs the same method itself. The review step needs a second vendor's CLI (`codex` or `claude`); without one it uses a fresh subagent of the same vendor, the one exception to the vendor rule, and says so in the doc and at acceptance.
 
 ## Files
 
