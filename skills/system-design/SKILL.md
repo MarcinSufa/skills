@@ -12,10 +12,10 @@ Three phases, in order: **Grill**, **Draft**, **Review**, then the user's **acce
 Every phase works against these sections; their order is the order of the doc.
 
 1. **Goal and non-goals**: the outcome, and the scope written as negation (what this design will not do).
-2. **Requirements**: functional (what users and callers can do) and non-functional (SLO for latency and availability, scale, durability, cost ceiling).
+2. **Requirements**: functional (what users and callers can do) and non-functional (SLO for latency and availability, scale, durability, accuracy, cost ceiling); each threshold the user gave is quoted verbatim.
 3. **Capacity estimates**: requests per second (average and peak, reads and writes apart), storage per year, bandwidth in and out, each computed by a script whose output is pasted, each input named as given or assumed.
-4. **API**: each endpoint or message, with inputs, outputs, errors and idempotency.
-5. **Data model and ownership**: entities, keys, indexes, which component owns and writes each one, retention.
+4. **API**: each endpoint or message, with inputs, outputs, errors and idempotency; every entity the user named gets its writes and its reads, list reads included.
+5. **Data model and ownership**: entities, keys, indexes, retention, and an ownership table: each entity, the one component that writes it, the components that read it.
 6. **High-level architecture**: a mermaid diagram of components and data flow, plus one line per component.
 7. **Deep dives**: the 2 or 3 riskiest parts (picked by blast radius times uncertainty), each with the mechanism, the numbers, and what breaks first under load.
 8. **Trade-offs and rejected alternatives**: each alternative, why it lost, and what would make it win.
@@ -31,7 +31,7 @@ A section is **settled** when it holds an answer from the user, a decision recor
 
 Walk the design tree with the `grilling` skill [not installed: the same method, by hand], with these rules taking precedence over its defaults:
 
-- **One question at a time**, each with your recommended answer and its reason; wait for the answer before the next question. One message or tool call carries exactly one question: never parallel tool calls for questions, never a numbered list of questions outside batch mode. Pick the next question from the decisions whose prerequisites are settled, highest consequence first: scale and SLO before storage, storage before API details.
+- **One question at a time**, each with your recommended answer and its reason; wait for the answer before the next question. One message or tool call carries exactly one question: never parallel tool calls for questions, never a numbered list of questions outside batch mode. Before each call, count its `?`: more than one `?` means split it. Pick the next question from the decisions whose prerequisites are settled, highest consequence first: scale and SLO before storage, storage before API details.
 - **No item cap.** The tree is as deep as the design needs.
 - **Facts come from the code, not the user.** Before asking, look: existing services, schemas, configs, traffic dashboards in the repo, prior docs in `docs/designs/` and ADRs. A question the code answers is answered, with the `file:line`, and never asked. Decisions (scope, trade-offs, SLOs, budget) stay the user's.
 - **Batch mode**, only when the user asks for it (async, "send all questions at once"): one coded questionnaire `Q1..Qn` covering every open question whose prerequisites are settled, each with a recommended answer; the user replies by code. Repeat for the questions the answers unblocked.
@@ -39,18 +39,21 @@ Walk the design tree with the `grilling` skill [not installed: the same method, 
 
 - **Stop condition.** Keep asking while an open decision would change a number in Capacity, a component in the architecture or a data store; stop when the only open decisions would change a paragraph, not the shape. Settle those with your recommendation as `Assumption:` and move on. Scope, SLO, cost ceiling and acceptable data loss are always asked, whatever their size, unless the user said skip.
 
+- **Requirements list.** Before drafting, write in the chat one line per requirement the user stated or confirmed: each feature, entity, number and threshold, in the user's words.
+
 Phase 1 is done when every section of the template is settled. List the sections and how each was settled (user, code, assumption) in the chat, not in the doc, before drafting.
 
 ## Phase 2: Draft
 
 1. Write `docs/designs/<slug>.md` (`<slug>`: kebab-case of the system or change). The repo already keeps design docs elsewhere: use that place and its format, and name the difference to the user. Header: title, date, status `draft`, author (the model), reviewer (filled in Phase 3).
 2. Fill the template section by section, in order. Each claim traces to a Phase 1 answer, a cited fact or a labelled assumption; a new decision found while drafting goes back to Phase 1 as one question.
-3. Capacity numbers come from a script, never mental arithmetic: write every input and formula in one `python3` snippet (no Python: `node -e` or any interpreter at hand; none at all: say so in the section and show each formula with its result), run it, and paste its output into the section; rerun it whenever an input changes. The section is done when it shows requests per second average and peak (reads and writes apart), storage per year (and over the retention period), and bandwidth in and out at peak.
-4. Start from the simplest design that meets the requirements (one region, one data store, no cache, queue or extra service). Each component or mechanism beyond it names the requirement or Capacity number the simpler choice fails; none, the simpler choice stays. Deep dives pick the 2 or 3 parts where a wrong choice costs the most to undo, name why each was picked, and compare against that simplest choice.
-5. The doc holds the design (and, after Phase 3, its review log) only: assumptions stay inline as `Assumption:` labels; the settled-by table, a second assumptions list and the acceptance summary go to the chat.
-6. **ADR** only for a decision that is hard to reverse, surprising without context, and the outcome of a real trade-off: a short file in the repo's ADR folder [none: `docs/adr/NNNN-<slug>.md`] with context, decision, consequences, linked from the doc. Every other decision lives in the doc only.
+3. Numbers come from one script, never mental arithmetic: every number in the doc (Capacity, deep dives, load-test targets, cost) is an input or an output of one `python3` snippet, with replicas, copies and fan-out (recipients per message, followers per post) as named variables, never folded into a constant. Write it (no Python: `node -e` or any interpreter at hand; none at all: say so in the section and show each formula with its result), run it, and paste its output into Capacity; rerun it whenever an input changes. The section is done when it shows requests per second average and peak (reads and writes apart), storage per year (and over the retention period), and bandwidth in and out at peak.
+4. Each threshold the user gave (latency, availability, accuracy, data loss) gets a derivation in the doc that the design meets it (from the script or the mechanism), or an explicit `does not meet: <gap>` with what would close it; the verification plan tests it and never assumes it passes.
+5. Start from the simplest design that meets the requirements (one region, one data store, no cache, queue or extra service). Each component or mechanism beyond it names the requirement or Capacity number the simpler choice fails; none, the simpler choice stays. YAGNI cuts mechanisms, never a requirement: every item on the requirements list appears in Requirements and in the section that serves it (API, Data model, Capacity). Deep dives pick the 2 or 3 parts where a wrong choice costs the most to undo, name why each was picked, and compare against that simplest choice.
+6. The doc holds the design (and, after Phase 3, its review log) only: assumptions stay inline as `Assumption:` labels, and there is no settled-by table or column; that table, a second assumptions list and the acceptance summary go to the chat.
+7. **ADR** only for a decision that is hard to reverse, surprising without context, and the outcome of a real trade-off: a short file in the repo's ADR folder [none: `docs/adr/NNNN-<slug>.md`] with context, decision, consequences, linked from the doc. Every other decision lives in the doc only.
 
-Phase 2 is done when all 13 sections are filled, the Capacity checklist is complete and the mermaid block renders (`mmdc` when installed; otherwise say it was checked by reading only).
+Phase 2 is done when all 13 sections are filled, every item on the requirements list is covered, the Capacity checklist is complete and the mermaid block renders (`mmdc` when installed; otherwise say it was checked by reading only).
 
 ## Phase 3: Review
 

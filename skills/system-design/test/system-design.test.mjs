@@ -89,3 +89,43 @@ test('deep dives justify themselves against the simplest viable design', () => {
   const draft = phase(read('SKILL.md'), 'Phase 2: Draft', 'Phase 3: Review');
   assert.match(draft, /simplest design that meets the requirements/);
 });
+
+test('requirements from the user answers are listed before drafting and survive YAGNI', () => {
+  const md = read('SKILL.md');
+  const grill = phase(md, 'Phase 1: Grill', 'Phase 2: Draft');
+  assert.match(grill, /\*\*Requirements list\.\*\*/);
+  const draft = phase(md, 'Phase 2: Draft', 'Phase 3: Review');
+  assert.match(draft, /YAGNI cuts mechanisms, never a requirement/);
+  assert.match(draft, /every item on the requirements list/);
+});
+
+test('one script computes every number, with replicas, copies and fan-out as variables', () => {
+  const draft = phase(read('SKILL.md'), 'Phase 2: Draft', 'Phase 3: Review');
+  assert.match(draft, /every number in the doc/);
+  assert.match(draft, /replicas, copies and fan-out/);
+});
+
+test('user thresholds are quoted verbatim and each is derived or marked not met', () => {
+  const md = read('SKILL.md');
+  assert.match(md, /quoted verbatim/);
+  const draft = phase(md, 'Phase 2: Draft', 'Phase 3: Review');
+  assert.match(draft, /does not meet/);
+});
+
+test('the API covers every entity, list reads included, and data has an ownership table', () => {
+  const md = read('SKILL.md');
+  const template = md.slice(md.indexOf('## The template'), md.indexOf('## Phase 1'));
+  assert.match(template, /every entity/);
+  assert.match(template, /list reads/);
+  assert.match(template, /ownership table/);
+});
+
+test('a question call with more than one question mark is split', () => {
+  const grill = phase(read('SKILL.md'), 'Phase 1: Grill', 'Phase 2: Draft');
+  assert.match(grill, /more than one `\?`/);
+});
+
+test('the doc never carries a settled-by table', () => {
+  const draft = phase(read('SKILL.md'), 'Phase 2: Draft', 'Phase 3: Review');
+  assert.match(draft, /no settled-by table or column/);
+});
