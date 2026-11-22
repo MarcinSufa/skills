@@ -101,7 +101,7 @@ test('requirements from the user answers are listed before drafting and survive 
 
 test('one script computes every number, with replicas, copies and fan-out as variables', () => {
   const draft = phase(read('SKILL.md'), 'Phase 2: Draft', 'Phase 3: Review');
-  assert.match(draft, /every number in the doc/);
+  assert.match(draft, /every computed figure in the doc/);
   assert.match(draft, /replicas, copies and fan-out/);
 });
 
@@ -115,7 +115,7 @@ test('user thresholds are quoted verbatim and each is derived or marked not met'
 test('the API covers every entity, list reads included, and data has an ownership table', () => {
   const md = read('SKILL.md');
   const template = md.slice(md.indexOf('## The template'), md.indexOf('## Phase 1'));
-  assert.match(template, /every entity/);
+  assert.match(template, /every entity callers read or write/);
   assert.match(template, /list reads/);
   assert.match(template, /ownership table/);
 });
