@@ -36,12 +36,12 @@ flowchart TD
   S1 --> S0{"<b>0 · Team</b><br/>saved in roster?"}
   S0 -- no --> T["detect CLIs, ask once:<br/>conductor, worker,<br/>reviewer, strategy"]
   T --> S2
-  S0 -- yes --> S2{"<b>2 · Clarify</b><br/>open questions?"}
-  S2 -- yes --> Q["One coded questionnaire,<br/>max 5 items, wait"]
+  S0 -- yes --> S2{"<b>2 · Clarify</b><br/>architectural?<br/>open questions?"}
+  S2 -- "open questions" --> Q["One coded questionnaire,<br/>max 5 items, wait"]
   S2 -- architectural --> SD["system-design:<br/>grill, doc, review;<br/>you accept the doc"]
   Q --> S3
   SD --> S3
-  S2 -- no --> S3["<b>3 · Implement</b><br/>check nobody else is on it,<br/>worktree, worker + reviewer"]
+  S2 -- "neither" --> S3["<b>3 · Implement</b><br/>check nobody else is on it,<br/>worktree, worker + reviewer"]
   S3 --> S4["<b>4 · Gates</b><br/>hooks block, never bypassed"]
   S4 --> S5["<b>5 · Verify + review</b><br/>evidence, e2e + film for UI,<br/>flag matrix, risk-code-review"]
   S5 --> S6(["<b>6 · Lessons</b><br/>corrections queued"])
