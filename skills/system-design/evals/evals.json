@@ -1,0 +1,66 @@
+{
+  "skill_name": "system-design",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Design a URL shortener for 100M new URLs per day.",
+      "expected_output": "Phase 1 opens with one question about the most consequential open decision (read/write ratio, retention or latency SLO), with a recommended answer, and waits.",
+      "files": [],
+      "expectations": [
+        "The first reply asks exactly one question",
+        "The question carries a recommended answer and a reason",
+        "No design doc is written before the questions are settled",
+        "The reply does not ask for a fact the prompt already gives (100M URLs per day)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Design a URL shortener for 100M new URLs per day. I am away all day: send me all your questions at once and I will answer by code.",
+      "expected_output": "Batch mode: one coded questionnaire Q1..Qn covering every open question whose prerequisites are settled, each with a recommended answer.",
+      "files": [],
+      "expectations": [
+        "Questions are coded Q1, Q2, and so on, in a single message",
+        "There are more than 5 questions or the reply states that no more are open",
+        "Every question has a recommended answer",
+        "No question depends on the answer to another question in the same batch"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Design a URL shortener for 100M new URLs per day. Use your recommendation for every question and write the doc.",
+      "expected_output": "A design doc at docs/designs/<slug>.md with all 13 template sections, assumptions labelled, capacity arithmetic shown, a mermaid diagram, and status draft, followed by a Phase 3 review request to a reviewer from another vendor.",
+      "files": [],
+      "expectations": [
+        "The doc path is under docs/designs/ with a kebab-case slug",
+        "All 13 template sections appear in order",
+        "Capacity shows the formula: 100M per day is about 1160 writes per second on average",
+        "Each assumed value is labelled Assumption:",
+        "The architecture section contains a mermaid block",
+        "Deep dives cover 2 or 3 parts, each with why it was picked",
+        "The header status is draft, not accepted",
+        "Phase 3 names a reviewer from a different vendor than the author and gives it the doc, not the conversation"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Let's practise a system design interview. Senior level, 45 minutes, design a rate limiter.",
+      "expected_output": "Interview mode: the skill states a vague prompt and asks one question at a time without recommended answers.",
+      "files": [],
+      "expectations": [
+        "The reply states the prompt as an interviewer would",
+        "It asks one question and gives no recommended answer",
+        "It does not write a file under docs/designs/"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Rename the `userId` parameter to `accountId` in src/api/orders.ts.",
+      "expected_output": "Not an architectural task: the skill should not fire, or should say a design doc is not needed.",
+      "files": [],
+      "expectations": [
+        "No design doc is written",
+        "No grilling session starts"
+      ]
+    }
+  ]
+}

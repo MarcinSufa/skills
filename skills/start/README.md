@@ -9,7 +9,7 @@
   </picture>
 </p>
 
-> A pipeline made of other skills: [`grilling`](https://github.com/mattpocock/skills) (mattpocock, MIT), [`worktree`](../worktree/README.md), [`conduct`](../conduct/README.md), [`flag-matrix`](../flag-matrix/README.md), [`risk-code-review`](../risk-code-review/README.md), [`promote-lessons`](../promote-lessons/README.md) and `superpowers:verification-before-completion` ([obra/superpowers](https://github.com/obra/superpowers)). A stage whose skill is missing runs a simpler fallback and says so.
+> A pipeline made of other skills: [`grilling`](https://github.com/mattpocock/skills) (mattpocock, MIT), [`system-design`](../system-design/README.md), [`worktree`](../worktree/README.md), [`conduct`](../conduct/README.md), [`flag-matrix`](../flag-matrix/README.md), [`risk-code-review`](../risk-code-review/README.md), [`promote-lessons`](../promote-lessons/README.md) and `superpowers:verification-before-completion` ([obra/superpowers](https://github.com/obra/superpowers)). A stage whose skill is missing runs a simpler fallback and says so.
 
 ```
 @start fix the duplicate toast after saving an order
@@ -21,7 +21,7 @@
 | **First use** | asks once for conductor, worker and reviewer models (from the CLIs it finds) and a default strategy, saved in your roster file; `@start setup` asks again |
 | **Strategies** | solo, fan-out (parallel workers), consensus (three models, two rounds, then the conductor decides), review (an existing PR by risk tier) |
 | **First output** | four one-line answers and your prompt rewritten, before any tool call (the team setup comes right after) |
-| **Stops for you** | the setup and clarify answers, a cost gate, and approval to commit or push |
+| **Stops for you** | the setup and clarify answers, acceptance of a design doc on an architectural task, a cost gate, and approval to commit or push |
 | **Never** | builds a parallel fix when someone else's branch or PR already covers the ticket, or routes around a blocking hook |
 
 ## Why
@@ -37,7 +37,7 @@ flowchart TD
   S0 -- no --> T["detect CLIs, ask once:<br/>conductor, worker,<br/>reviewer, strategy"]
   T --> S2
   S0 -- yes --> S2{"<b>2 · Clarify</b><br/>open questions?"}
-  S2 -- yes --> Q["One coded questionnaire,<br/>max 5 items, wait"]
+  S2 -- yes --> Q["One coded questionnaire,<br/>max 5 items, wait;<br/>architectural: system-design,<br/>doc accepted first"]
   Q --> S3
   S2 -- no --> S3["<b>3 · Implement</b><br/>check nobody else is on it,<br/>worktree, worker + reviewer"]
   S3 --> S4["<b>4 · Gates</b><br/>hooks block, never bypassed"]
@@ -54,7 +54,7 @@ flowchart TD
 
 - **1 · Sharpen.** Four answers: what a top expert would add, the rawest material they would start from, their tools beyond reasoning, and what outside the model shows the result is right. For a bug, each thing the reporter saw becomes an assertion with its expected value from the reporter's material, not from the code.
 - **0 · Team and strategy** (right after sharpen's first output). Read once from the roster file your `CLAUDE.md` points to (the one `risk-code-review` reads). Missing: the skill checks which of `claude`, `codex`, `gemini`, `grok`, `cursor-agent` run, asks you to pick the conductor, worker, reviewer and default strategy, and writes a `## Team and strategy` table there. A task can override the strategy with `--fan-out`, `--consensus` or `--review`.
-- **2 · Clarify.** Open architecture or product questions, or scope growth, go into one coded questionnaire through the `grilling` skill. Nothing open: no question.
+- **2 · Clarify.** An architectural task (a new service or data model, a change across components, a decision costly to reverse) runs [`system-design`](../system-design/README.md): questions one at a time, a reviewed design doc, and stage 3 waits until you accept it. Other open architecture or product questions, or scope growth, go into one coded questionnaire through the `grilling` skill. Nothing open: no question.
 - **3 · Implement.** First `git fetch`, then search every remote's commit messages, branch names and PRs for the ticket; someone else's work stops the run. Substantive work goes to `worktree` and `conduct` with your team: the worker writes, the conductor briefs and adjudicates, and the reviewer is never the worker's vendor. A trivial single-file edit is written directly.
 - **4 · Gates.** Hooks run on their own; a block is reported.
 - **5 · Verify and review.** Verification before claiming done. A UI change gets a committed e2e spec and a before/after film. Stubs of external APIs copy recorded responses, redacted. Code that reads a config flag gets a flag x moment matrix. Then `risk-code-review` on the final tree.
