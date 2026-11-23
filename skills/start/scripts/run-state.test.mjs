@@ -242,3 +242,15 @@ test('book --stream takes the last, cumulative result of a session and sums only
   s.run('book', '--stage', 'implement', '--leg', 'worker', '--stream', streamFile(s.dir, [0.2, 0.35, 0.1], ['a', 'a', 'b']));
   assert.equal(s.read().spent[0].usd, 0.45);
 });
+
+test('book --running-total books only the growth of a leg that reports a running total', () => {
+  const s = fresh();
+  s.run('init', '--task', 't', '--budget', '1');
+  s.run('book', '--stage', 'implement', '--leg', 'conductor', '--running-total', '0.12');
+  s.run('book', '--stage', 'verify', '--leg', 'conductor', '--running-total', '0.30');
+  assert.deepEqual(s.read().spent.map((e) => e.usd), [0.12, 0.18]);
+  assert.equal(s.run('book', '--stage', 'verify', '--leg', 'conductor', '--running-total', '0.2').code, 2, 'a running total cannot shrink');
+  const r = s.run('book', '--stage', 'verify', '--leg', 'conductor', '--running-total', '1.05');
+  assert.equal(r.code, 3);
+  assert.equal(s.run('status').out.spentUsd, 1.05);
+});

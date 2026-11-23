@@ -121,10 +121,15 @@ const commands = {
     if (state.status === 'done') fail('run is done; start a new run');
     const s = stage(o.stage);
     if (!o.leg) fail('--leg is required (worker, reviewer, subagent name, ...)');
-    const sources = [o.usd !== undefined, o.stream !== undefined, o.unpriced === true].filter(Boolean).length;
-    if (sources !== 1) fail('give exactly one of --usd, --stream, --unpriced');
+    const sources = [o.usd, o.stream, o['running-total'], o.unpriced || undefined].filter((v) => v !== undefined).length;
+    if (sources !== 1) fail('give exactly one of --usd, --stream, --running-total, --unpriced');
     let micros;
     if (o.usd !== undefined) micros = toMicros(usd(o.usd, '--usd'));
+    else if (o['running-total'] !== undefined) {
+      const before = state.spent.filter((e) => e.leg === o.leg).reduce((sum, e) => sum + toMicros(e.usd), 0);
+      micros = toMicros(usd(o['running-total'], '--running-total')) - before;
+      if (micros < 0) fail(`--running-total is below the ${toUsd(before)} USD already booked for leg ${o.leg}`);
+    }
     else if (o.stream !== undefined) micros = streamCost(o.stream);
     else {
       const est = o.estimate !== undefined ? usd(o.estimate, '--estimate') : state.lastEstimate[s];
@@ -205,7 +210,7 @@ function main(argv) {
     options: {
       state: { type: 'string' }, task: { type: 'string' }, budget: { type: 'string' }, retry: { type: 'string' },
       stage: { type: 'string' }, estimate: { type: 'string' }, legs: { type: 'string' }, leg: { type: 'string' },
-      usd: { type: 'string' }, stream: { type: 'string' }, unpriced: { type: 'boolean' },
+      usd: { type: 'string' }, stream: { type: 'string' }, 'running-total': { type: 'string' }, unpriced: { type: 'boolean' },
       kind: { type: 'string' }, signature: { type: 'string' }, feedback: { type: 'string' },
     },
   });
