@@ -3,7 +3,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/skills-dark.png">
-    <img alt="Agent skills that make the agent check its own work. Before the work: start, worktree, verify-env. While it works: supply-chain-guard, bigfile-guard, i-have-adhd, conduct, docs-vs-code-precedence. Before the merge: risk-code-review, flag-matrix, explain-gate. After the merge: promote-lessons." src="docs/assets/skills-light.png" width="880">
+    <img alt="Agent skills that make the agent check its own work. Before the work: start, system-design, worktree, verify-env. While it works: supply-chain-guard, bigfile-guard, i-have-adhd, conduct, docs-vs-code-precedence. Before the merge: risk-code-review, flag-matrix, explain-gate. After the merge: promote-lessons." src="docs/assets/skills-light.png" width="880">
   </picture>
 </p>
 
@@ -20,6 +20,7 @@ Agent skills for Claude Code (they also work in other agents that read `SKILL.md
 | Skill | What it does | Upstream |
 | --- | --- | --- |
 | [start](skills/start/README.md) | `@start <task>` pipeline: sharpen, clarify, implement, gates, review, lessons | own |
+| [system-design](skills/system-design/README.md) | Grills you one question at a time, writes a design doc, has another vendor review it, and waits for your acceptance; also interview practice | own; ideas from mattpocock, google, codeMaestro78, binodta (credited in its README) |
 | [worktree](skills/worktree/README.md) | Own git worktree per substantive task, with keep or remove rules | own |
 | [verify-env](skills/verify-env/README.md) | Read-only doctor for the host and session before a long run | own |
 
