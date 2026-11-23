@@ -21,10 +21,10 @@ function fresh() {
   return { dir, state, run, read };
 }
 
-function streamFile(dir, costs) {
-  const f = join(dir, `leg-${costs.join('-')}.jsonl`);
+function streamFile(dir, costs, sessions = costs.map((_, i) => `s${i}`)) {
+  const f = join(dir, `leg-${costs.join('-')}-${sessions.join('-')}.jsonl`);
   const lines = [{ type: 'system', subtype: 'init' }, { type: 'assistant', message: {} }];
-  for (const c of costs) lines.push({ type: 'result', subtype: 'success', total_cost_usd: c });
+  costs.forEach((c, i) => lines.push({ type: 'result', subtype: 'success', session_id: sessions[i], total_cost_usd: c }));
   writeFileSync(f, lines.map((l) => JSON.stringify(l)).join('\n') + '\n');
   return f;
 }
@@ -233,4 +233,12 @@ test('book still records real spend after a budget or retry stop, but not after 
   d.run('init', '--task', 't');
   d.run('done');
   assert.equal(d.run('book', '--stage', 'verify', '--leg', 'x', '--usd', '0.1').code, 2);
+});
+
+test('book --stream takes the last, cumulative result of a session and sums only across sessions', () => {
+  const s = fresh();
+  s.run('init', '--task', 't', '--budget', '10');
+  // A session that resumes after a background subagent writes a second result with the running total.
+  s.run('book', '--stage', 'implement', '--leg', 'worker', '--stream', streamFile(s.dir, [0.2, 0.35, 0.1], ['a', 'a', 'b']));
+  assert.equal(s.read().spent[0].usd, 0.45);
 });

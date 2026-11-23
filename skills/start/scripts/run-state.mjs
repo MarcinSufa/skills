@@ -66,7 +66,9 @@ function streamCost(file) {
     .map((l) => { try { return JSON.parse(l); } catch { return null; } })
     .filter((o) => o?.type === 'result' && typeof o.total_cost_usd === 'number');
   if (results.length === 0) fail(`${file} has no result line with total_cost_usd; book it with --unpriced`);
-  return results.reduce((sum, o) => sum + toMicros(o.total_cost_usd), 0);
+  // total_cost_usd is a running total: a session that resumes (after a background subagent) writes it again.
+  const lastPerSession = new Map(results.map((o, i) => [o.session_id ?? `line-${i}`, o.total_cost_usd]));
+  return [...lastPerSession.values()].reduce((sum, usd) => sum + toMicros(usd), 0);
 }
 
 const commands = {
