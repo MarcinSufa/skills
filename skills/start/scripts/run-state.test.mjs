@@ -137,7 +137,7 @@ test('the estimate defaults to the largest earlier leg of that stage, else 10% o
   assert.equal(s.run('check', '--stage', 'implement').out.neededUsd, 0.7);
 });
 
-test('book sums every result line of a stream-json file and counts subagents and retry rounds', () => {
+test('book sums the last result line per session of a stream-json file and counts subagents and retry rounds', () => {
   const s = fresh();
   s.run('init', '--task', 't', '--budget', '10', '--retry', 'implement:2');
   s.run('book', '--stage', 'implement', '--leg', 'worker', '--stream', streamFile(s.dir, [0.25, 0.5]));
@@ -213,6 +213,8 @@ test('a booking that reaches the ceiling stops the run, so done cannot report su
   assert.equal(r.out.overCeiling, true);
   assert.equal(s.read().status, 'stopped_budget');
   assert.equal(s.run('done').code, 2);
+  const resumed = s.run('resume', '--budget', '3');
+  assert.deepEqual(resumed.out.next, { stage: 'implement', round: 1, reason: 'over_ceiling', bookedLeg: 'worker' });
 });
 
 test('book --unpriced refuses a zero estimate, also after a check without a ceiling', () => {

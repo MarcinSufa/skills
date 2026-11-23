@@ -142,7 +142,7 @@ const commands = {
     const overCeiling = ceiling !== null && spent >= ceiling;
     if (overCeiling && state.status === 'running') {
       state.status = 'stopped_budget';
-      state.next = { stage: s, round: roundOf(state, s), reason: 'over_ceiling' };
+      state.next = { stage: s, round: roundOf(state, s), reason: 'over_ceiling', bookedLeg: o.leg };
     }
     save(o.state, state);
     return { code: overCeiling ? 3 : 0, out: { bookedUsd: toUsd(micros), spentUsd: toUsd(spent), overCeiling } };
