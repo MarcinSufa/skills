@@ -115,6 +115,8 @@ const commands = {
   },
 
   book(o, state) {
+    // Spend that happened after a stop is still real, so only a finished run refuses it.
+    if (state.status === 'done') fail('run is done; start a new run');
     const s = stage(o.stage);
     if (!o.leg) fail('--leg is required (worker, reviewer, subagent name, ...)');
     const sources = [o.usd !== undefined, o.stream !== undefined, o.unpriced === true].filter(Boolean).length;
@@ -124,12 +126,19 @@ const commands = {
     else if (o.stream !== undefined) micros = streamCost(o.stream);
     else {
       const est = o.estimate !== undefined ? usd(o.estimate, '--estimate') : state.lastEstimate[s];
-      if (est === undefined) fail('--unpriced needs --estimate or an earlier check of this stage');
+      if (!(est > 0)) fail('--unpriced needs an estimate above 0 (--estimate, or an earlier check of this stage)');
       micros = toMicros(est);
     }
     state.spent.push({ stage: s, round: roundOf(state, s), leg: o.leg, usd: toUsd(micros), unpriced: o.unpriced === true });
+    const spent = spentMicros(state);
+    const ceiling = state.policy.ceilingUsd === null ? null : toMicros(state.policy.ceilingUsd);
+    const overCeiling = ceiling !== null && spent >= ceiling;
+    if (overCeiling && state.status === 'running') {
+      state.status = 'stopped_budget';
+      state.next = { stage: s, round: roundOf(state, s), reason: 'over_ceiling' };
+    }
     save(o.state, state);
-    return { code: 0, out: { bookedUsd: toUsd(micros), spentUsd: toUsd(spentMicros(state)) } };
+    return { code: overCeiling ? 3 : 0, out: { bookedUsd: toUsd(micros), spentUsd: toUsd(spent), overCeiling } };
   },
 
   fail(o, state) {

@@ -203,3 +203,34 @@ test('resume does not reopen a retry or terminal stop', () => {
   s.run('fail', '--stage', 'verify', '--kind', 'hook', '--signature', 'blocked');
   assert.equal(s.run('resume', '--budget', '9').code, 2);
 });
+
+test('a booking that reaches the ceiling stops the run, so done cannot report success', () => {
+  const s = fresh();
+  s.run('init', '--task', 't', '--budget', '1');
+  assert.equal(s.run('check', '--stage', 'implement', '--estimate', '0.3').code, 0);
+  const r = s.run('book', '--stage', 'implement', '--leg', 'worker', '--usd', '1.2');
+  assert.equal(r.code, 3);
+  assert.equal(r.out.overCeiling, true);
+  assert.equal(s.read().status, 'stopped_budget');
+  assert.equal(s.run('done').code, 2);
+});
+
+test('book --unpriced refuses a zero estimate, also after a check without a ceiling', () => {
+  const s = fresh();
+  s.run('init', '--task', 't');
+  s.run('check', '--stage', 'verify');
+  assert.equal(s.run('book', '--stage', 'verify', '--leg', 'codex', '--unpriced').code, 2);
+  assert.equal(s.run('book', '--stage', 'verify', '--leg', 'codex', '--unpriced', '--estimate', '0').code, 2);
+  assert.equal(s.run('book', '--stage', 'verify', '--leg', 'codex', '--unpriced', '--estimate', '0.2').code, 0);
+});
+
+test('book still records real spend after a budget or retry stop, but not after done', () => {
+  const s = fresh();
+  s.run('init', '--task', 't', '--budget', '1');
+  s.run('check', '--stage', 'verify', '--estimate', '5');
+  assert.equal(s.run('book', '--stage', 'verify', '--leg', 'late-reviewer', '--usd', '0.1').code, 0);
+  const d = fresh();
+  d.run('init', '--task', 't');
+  d.run('done');
+  assert.equal(d.run('book', '--stage', 'verify', '--leg', 'x', '--usd', '0.1').code, 2);
+});
