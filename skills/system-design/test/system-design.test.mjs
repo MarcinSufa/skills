@@ -129,3 +129,24 @@ test('the doc never carries a settled-by table', () => {
   const draft = phase(read('SKILL.md'), 'Phase 2: Draft', 'Phase 3: Review');
   assert.match(draft, /no settled-by table or column/);
 });
+
+test('the review brief lists the same 13 sections as the template', () => {
+  const brief = read('references', 'review-brief.md');
+  const found = [...brief.matchAll(/^ {3}\d+\. (.+)$/gm)].map((m) => m[1]);
+  assert.deepEqual(found, SECTIONS);
+});
+
+test('start stage 2 writes the design doc in the task worktree that stage 3 reuses', () => {
+  const start = readFileSync(join(SKILL, '..', 'start', 'SKILL.md'), 'utf8');
+  const lines = start.split('\n');
+  const stage2 = lines.find((l) => l.startsWith('2. **Clarify.**'));
+  const stage3 = lines.find((l) => l.startsWith('3. **Implement.**'));
+  assert.match(stage2, /`worktree`[^.]*before[^.]*design doc/);
+  assert.match(stage3, /reuses the tree stage 2 made/);
+});
+
+test('start stage 2 fallback without system-design still produces a design doc to accept', () => {
+  const start = readFileSync(join(SKILL, '..', 'start', 'SKILL.md'), 'utf8');
+  const stage2 = start.split('\n').find((l) => l.startsWith('2. **Clarify.**'));
+  assert.match(stage2, /`system-design`[^[]*\[not installed:[^\]]*docs\/designs\/<slug>\.md[^\]]*accept/);
+});

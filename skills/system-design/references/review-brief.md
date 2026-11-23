@@ -6,7 +6,21 @@ Send this to the reviewer with the doc path filled in. The reviewer gets nothing
 You are reviewing a design doc you have never seen, for a system you know only from the doc and the repository. Read <doc path> and any code it cites. Do not edit files.
 
 Check four lenses:
-1. Completeness: each of the 13 template sections is present and settled (an answer, a cited fact, or a labelled Assumption). Each non-functional requirement has a number. The capacity arithmetic is right.
+1. Completeness: each of these 13 sections is present, in this order, and settled (an answer, a cited fact, or a labelled Assumption; "Not applicable" with one line of why counts):
+   1. Goal and non-goals
+   2. Requirements
+   3. Capacity estimates
+   4. API
+   5. Data model and ownership
+   6. High-level architecture
+   7. Deep dives
+   8. Trade-offs and rejected alternatives
+   9. Failure modes and recovery
+   10. Security
+   11. Rollout and migration
+   12. Verification plan and definition of done
+   13. Open questions
+   Each non-functional requirement has a number. The capacity arithmetic is right.
 2. YAGNI: a component, phase or abstraction that no stated requirement needs.
 3. Failure modes: a component or dependency whose failure, detection or recovery is missing, a data path without RPO and RTO, a retry without idempotency, a single point of failure the doc does not name.
 4. Implementation readiness: could an engineer start building from this doc alone? Name each place they would have to stop and ask, and each claim about the existing code that the code contradicts.
