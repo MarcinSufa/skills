@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { parseArgs } from 'node:util';
-import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, openSync, closeSync, rmSync } from 'node:fs';
 import { dirname } from 'node:path';
 
 const STAGES = ['sharpen', 'team', 'clarify', 'implement', 'gates', 'verify', 'lessons'];
@@ -51,6 +51,21 @@ function save(path, state) {
   const tmp = `${path}.${process.pid}.tmp`;
   writeFileSync(tmp, JSON.stringify(state, null, 2) + '\n');
   renameSync(tmp, path);
+}
+
+// Parallel legs book into one file, so every read-modify-write holds an exclusive lock file.
+function withLock(path, fn) {
+  mkdirSync(dirname(path), { recursive: true });
+  const lock = `${path}.lock`;
+  const deadline = Date.now() + 10_000;
+  for (;;) {
+    try { closeSync(openSync(lock, 'wx')); break; } catch (err) {
+      if (err.code !== 'EEXIST') throw err;
+      if (Date.now() > deadline) fail(`${lock} is still held after 10 s; delete it if no run-state command is running`);
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 20);
+    }
+  }
+  try { return fn(); } finally { rmSync(lock, { force: true }); }
 }
 
 const spentMicros = (state) => state.spent.reduce((sum, e) => sum + toMicros(e.usd), 0);
@@ -228,7 +243,7 @@ function main(argv) {
     },
   });
   if (!values.state) fail('--state <file> is required');
-  return cmd === 'init' ? commands.init(values) : commands[cmd](values, load(values.state));
+  return withLock(values.state, () => (cmd === 'init' ? commands.init(values) : commands[cmd](values, load(values.state))));
 }
 
 try {

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
@@ -309,4 +309,16 @@ test('book --running-total starts from zero in each driving session and needs --
   const missing = s.run('book', '--stage', 'verify', '--leg', 'conductor', '--running-total', '0.7');
   assert.equal(missing.code, 2);
   assert.match(missing.stderr, /--session/);
+});
+
+test('parallel bookings on one state file all land', async () => {
+  const s = fresh();
+  s.run('init', '--task', 't', '--budget', '100');
+  const legs = Array.from({ length: 12 }, (_, i) => new Promise((resolve) => {
+    spawn(process.execPath, [SCRIPT, 'book', '--state', s.state, '--stage', 'implement', '--leg', `worker-${i}`, '--usd', '0.1'])
+      .on('exit', resolve);
+  }));
+  assert.deepEqual(await Promise.all(legs), Array(12).fill(0));
+  assert.equal(s.read().spent.length, 12);
+  assert.equal(existsSync(`${s.state}.lock`), false);
 });
