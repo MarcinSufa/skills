@@ -54,7 +54,11 @@ function save(path, state) {
 }
 
 const spentMicros = (state) => state.spent.reduce((sum, e) => sum + toMicros(e.usd), 0);
-const roundOf = (state, s) => state.rounds[s] ?? 1;
+// A retry reruns every stage from its target on, so those stages share the target's round.
+function roundOf(state, s) {
+  const to = state.policy.retry?.to;
+  return to && STAGES.indexOf(s) >= STAGES.indexOf(to) ? state.rounds[to] ?? 1 : 1;
+}
 
 function requireRunning(state) {
   if (state.status !== 'running') fail(`run is ${state.status}; resume it or start a new run`);

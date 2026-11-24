@@ -256,3 +256,16 @@ test('book --running-total books only the growth of a leg that reports a running
   assert.equal(r.code, 3);
   assert.equal(s.run('status').out.spentUsd, 1.05);
 });
+
+test('stages rerun after the retry target carry the retry round into failures and bookings', () => {
+  const s = fresh();
+  s.run('init', '--task', 't', '--budget', '10', '--retry', 'implement:2');
+  s.run('book', '--stage', 'clarify', '--leg', 'conductor-clarify', '--usd', '0.1');
+  s.run('fail', '--stage', 'verify', '--kind', 'work', '--signature', 'pytest a.py::one');
+  s.run('book', '--stage', 'implement', '--leg', 'worker', '--usd', '0.2');
+  s.run('book', '--stage', 'verify', '--leg', 'reviewer', '--usd', '0.3');
+  s.run('fail', '--stage', 'verify', '--kind', 'work', '--signature', 'pytest a.py::two');
+  const st = s.read();
+  assert.deepEqual(st.spent.map((e) => [e.stage, e.round]), [['clarify', 1], ['implement', 2], ['verify', 2]]);
+  assert.deepEqual(st.failures.map((f) => [f.stage, f.round]), [['verify', 1], ['verify', 2]]);
+});
