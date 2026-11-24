@@ -140,8 +140,9 @@ const commands = {
     else if (o.stream !== undefined) micros = streamCost(o.stream);
     else {
       const est = o.estimate !== undefined ? usd(o.estimate, '--estimate') : state.lastEstimate[s];
-      if (!(est > 0)) fail('--unpriced needs an estimate above 0 (--estimate, or an earlier check of this stage)');
-      micros = toMicros(est);
+      // Without a ceiling nothing is guarded by the estimate, so a leg of unknown cost is booked at 0 and counted.
+      if (!(est > 0) && state.policy.ceilingUsd !== null) fail('--unpriced needs an estimate above 0 under a ceiling (--estimate, or an earlier check of this stage)');
+      micros = toMicros(est ?? 0);
     }
     state.spent.push({ stage: s, round: roundOf(state, s), leg: o.leg, usd: toUsd(micros), unpriced: o.unpriced === true });
     const spent = spentMicros(state);
@@ -205,7 +206,8 @@ const commands = {
 
   status(_o, state) {
     const unpriced = state.spent.filter((e) => e.unpriced).reduce((sum, e) => sum + toMicros(e.usd), 0);
-    return { code: 0, out: { status: state.status, task: state.task, ceilingUsd: state.policy.ceilingUsd, spentUsd: toUsd(spentMicros(state)), unpricedUsd: toUsd(unpriced), rounds: state.rounds, failures: state.failures.length, next: state.next } };
+    const unknownCostLegs = state.spent.filter((e) => e.unpriced && toMicros(e.usd) === 0).length;
+    return { code: 0, out: { status: state.status, task: state.task, ceilingUsd: state.policy.ceilingUsd, spentUsd: toUsd(spentMicros(state)), unpricedUsd: toUsd(unpriced), unknownCostLegs, rounds: state.rounds, failures: state.failures.length, next: state.next } };
   },
 };
 

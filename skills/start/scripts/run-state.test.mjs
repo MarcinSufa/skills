@@ -162,8 +162,8 @@ test('book --unpriced without an estimate uses the per-leg estimate of the last 
   s.run('book', '--stage', 'verify', '--leg', 'codex', '--unpriced');
   assert.equal(s.read().spent[0].usd, 0.3);
   const t = fresh();
-  t.run('init', '--task', 't');
-  assert.equal(t.run('book', '--stage', 'verify', '--leg', 'codex', '--unpriced').code, 2);
+  t.run('init', '--task', 't', '--budget', '4');
+  assert.equal(t.run('book', '--stage', 'verify', '--leg', 'codex', '--unpriced').code, 2, 'under a ceiling an unpriced leg needs an estimate');
 });
 
 test('book --stream with no result line is refused', () => {
@@ -217,13 +217,25 @@ test('a booking that reaches the ceiling stops the run, so done cannot report su
   assert.deepEqual(resumed.out.next, { stage: 'implement', round: 1, reason: 'over_ceiling', bookedLeg: 'worker' });
 });
 
-test('book --unpriced refuses a zero estimate, also after a check without a ceiling', () => {
+test('book --unpriced refuses a zero estimate under a ceiling', () => {
   const s = fresh();
-  s.run('init', '--task', 't');
-  s.run('check', '--stage', 'verify');
+  s.run('init', '--task', 't', '--budget', '4');
+  s.run('check', '--stage', 'verify', '--estimate', '0');
   assert.equal(s.run('book', '--stage', 'verify', '--leg', 'codex', '--unpriced').code, 2);
   assert.equal(s.run('book', '--stage', 'verify', '--leg', 'codex', '--unpriced', '--estimate', '0').code, 2);
   assert.equal(s.run('book', '--stage', 'verify', '--leg', 'codex', '--unpriced', '--estimate', '0.2').code, 0);
+});
+
+test('without a ceiling an unpriced leg with no estimate is booked as unknown cost, and status counts it', () => {
+  const s = fresh();
+  s.run('init', '--task', 't');
+  assert.equal(s.run('check', '--stage', 'implement').code, 0);
+  assert.equal(s.run('book', '--stage', 'implement', '--leg', 'codex', '--unpriced').code, 0);
+  assert.equal(s.run('book', '--stage', 'verify', '--leg', 'reviewer', '--unpriced', '--estimate', '0.2').code, 0);
+  const status = s.run('status').out;
+  assert.equal(status.spentUsd, 0.2);
+  assert.equal(status.unpricedUsd, 0.2);
+  assert.equal(status.unknownCostLegs, 1);
 });
 
 test('book still records real spend after a budget or retry stop, but not after done', () => {
