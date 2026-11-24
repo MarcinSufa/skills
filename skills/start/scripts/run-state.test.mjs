@@ -260,11 +260,11 @@ test('book --stream takes the last, cumulative result of a session and sums only
 test('book --running-total books only the growth of a leg that reports a running total', () => {
   const s = fresh();
   s.run('init', '--task', 't', '--budget', '1');
-  s.run('book', '--stage', 'implement', '--leg', 'conductor', '--running-total', '0.12');
-  s.run('book', '--stage', 'verify', '--leg', 'conductor', '--running-total', '0.30');
+  s.run('book', '--stage', 'implement', '--leg', 'conductor', '--running-total', '0.12', '--session', 'a');
+  s.run('book', '--stage', 'verify', '--leg', 'conductor', '--running-total', '0.30', '--session', 'a');
   assert.deepEqual(s.read().spent.map((e) => e.usd), [0.12, 0.18]);
-  assert.equal(s.run('book', '--stage', 'verify', '--leg', 'conductor', '--running-total', '0.2').code, 2, 'a running total cannot shrink');
-  const r = s.run('book', '--stage', 'verify', '--leg', 'conductor', '--running-total', '1.05');
+  assert.equal(s.run('book', '--stage', 'verify', '--leg', 'conductor', '--running-total', '0.2', '--session', 'a').code, 2, 'a running total cannot shrink');
+  const r = s.run('book', '--stage', 'verify', '--leg', 'conductor', '--running-total', '1.05', '--session', 'a');
   assert.equal(r.code, 3);
   assert.equal(s.run('status').out.spentUsd, 1.05);
 });
@@ -296,4 +296,17 @@ test('a budget stop keeps the retry feedback for resume, and the failure history
   s.run('book', '--stage', 'implement', '--leg', 'worker', '--usd', '2.5');
   assert.equal(s.read().next.reason, 'over_ceiling');
   assert.equal(s.read().next.feedback, 'expected 1 got 2');
+});
+
+test('book --running-total starts from zero in each driving session and needs --session', () => {
+  const s = fresh();
+  s.run('init', '--task', 't', '--budget', '5');
+  s.run('book', '--stage', 'implement', '--leg', 'conductor', '--running-total', '0.5', '--session', 'first');
+  assert.equal(s.run('book', '--stage', 'verify', '--leg', 'conductor', '--running-total', '0.1', '--session', 'second').code, 0);
+  s.run('book', '--stage', 'verify', '--leg', 'conductor', '--running-total', '0.6', '--session', 'second');
+  assert.deepEqual(s.read().spent.map((e) => [e.session, e.usd]), [['first', 0.5], ['second', 0.1], ['second', 0.5]]);
+  assert.equal(s.run('status').out.spentUsd, 1.1);
+  const missing = s.run('book', '--stage', 'verify', '--leg', 'conductor', '--running-total', '0.7');
+  assert.equal(missing.code, 2);
+  assert.match(missing.stderr, /--session/);
 });

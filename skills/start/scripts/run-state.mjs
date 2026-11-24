@@ -131,11 +131,15 @@ const commands = {
     const sources = [o.usd, o.stream, o['running-total'], o.unpriced || undefined].filter((v) => v !== undefined).length;
     if (sources !== 1) fail('give exactly one of --usd, --stream, --running-total, --unpriced');
     let micros;
+    let session;
     if (o.usd !== undefined) micros = toMicros(usd(o.usd, '--usd'));
     else if (o['running-total'] !== undefined) {
-      const before = state.spent.filter((e) => e.leg === o.leg).reduce((sum, e) => sum + toMicros(e.usd), 0);
+      // A new driving session restarts its total at 0, so only readings of the same session are subtracted.
+      if (!o.session) fail('--running-total needs --session <label>, one per driving session');
+      session = o.session;
+      const before = state.spent.filter((e) => e.leg === o.leg && e.session === session).reduce((sum, e) => sum + toMicros(e.usd), 0);
       micros = toMicros(usd(o['running-total'], '--running-total')) - before;
-      if (micros < 0) fail(`--running-total is below the ${toUsd(before)} USD already booked for leg ${o.leg}`);
+      if (micros < 0) fail(`--running-total is below the ${toUsd(before)} USD already booked for leg ${o.leg} in session ${session}`);
     }
     else if (o.stream !== undefined) micros = streamCost(o.stream);
     else {
@@ -144,7 +148,7 @@ const commands = {
       if (!(est > 0) && state.policy.ceilingUsd !== null) fail('--unpriced needs an estimate above 0 under a ceiling (--estimate, or an earlier check of this stage)');
       micros = toMicros(est ?? 0);
     }
-    state.spent.push({ stage: s, round: roundOf(state, s), leg: o.leg, usd: toUsd(micros), unpriced: o.unpriced === true });
+    state.spent.push({ stage: s, round: roundOf(state, s), leg: o.leg, ...(session ? { session } : {}), usd: toUsd(micros), unpriced: o.unpriced === true });
     const spent = spentMicros(state);
     const ceiling = state.policy.ceilingUsd === null ? null : toMicros(state.policy.ceilingUsd);
     const overCeiling = ceiling !== null && spent >= ceiling;
@@ -220,7 +224,7 @@ function main(argv) {
       state: { type: 'string' }, task: { type: 'string' }, budget: { type: 'string' }, retry: { type: 'string' },
       stage: { type: 'string' }, estimate: { type: 'string' }, legs: { type: 'string' }, leg: { type: 'string' },
       usd: { type: 'string' }, stream: { type: 'string' }, 'running-total': { type: 'string' }, unpriced: { type: 'boolean' },
-      kind: { type: 'string' }, signature: { type: 'string' }, feedback: { type: 'string' },
+      kind: { type: 'string' }, signature: { type: 'string' }, feedback: { type: 'string' }, session: { type: 'string' },
     },
   });
   if (!values.state) fail('--state <file> is required');
