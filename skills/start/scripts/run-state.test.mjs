@@ -269,3 +269,19 @@ test('stages rerun after the retry target carry the retry round into failures an
   assert.deepEqual(st.spent.map((e) => [e.stage, e.round]), [['clarify', 1], ['implement', 2], ['verify', 2]]);
   assert.deepEqual(st.failures.map((f) => [f.stage, f.round]), [['verify', 1], ['verify', 2]]);
 });
+
+test('a budget stop keeps the retry feedback for resume, and the failure history keeps it too', () => {
+  const s = fresh();
+  s.run('init', '--task', 't', '--budget', '1', '--retry', 'implement:2');
+  s.run('book', '--stage', 'implement', '--leg', 'worker', '--usd', '0.7');
+  s.run('fail', '--stage', 'verify', '--kind', 'work', '--signature', 'pytest a.py::one', '--feedback', 'expected 1 got 2');
+  assert.equal(s.run('check', '--stage', 'implement').code, 3);
+  assert.equal(s.read().failures[0].feedback, 'expected 1 got 2');
+  const r = s.run('resume', '--budget', '3');
+  assert.equal(r.out.next.stage, 'implement');
+  assert.equal(r.out.next.round, 2);
+  assert.equal(r.out.next.feedback, 'expected 1 got 2');
+  s.run('book', '--stage', 'implement', '--leg', 'worker', '--usd', '2.5');
+  assert.equal(s.read().next.reason, 'over_ceiling');
+  assert.equal(s.read().next.feedback, 'expected 1 got 2');
+});

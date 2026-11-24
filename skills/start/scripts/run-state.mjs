@@ -60,6 +60,9 @@ function roundOf(state, s) {
   return to && STAGES.indexOf(s) >= STAGES.indexOf(to) ? state.rounds[to] ?? 1 : 1;
 }
 
+// A budget stop replaces next; the retry feedback in it is the worker's only copy of the failure details.
+const keptFeedback = (state) => (state.next?.feedback ? { feedback: state.next.feedback } : {});
+
 function requireRunning(state) {
   if (state.status !== 'running') fail(`run is ${state.status}; resume it or start a new run`);
 }
@@ -114,7 +117,7 @@ const commands = {
     const out = { ok, spentUsd: toUsd(spent), remainingUsd: toUsd(remaining), neededUsd: toUsd(needed), perLegCapUsd: ok ? toUsd(Math.floor(remaining / legs)) : 0 };
     if (!ok) {
       state.status = 'stopped_budget';
-      state.next = { stage: s, round: roundOf(state, s), reason: 'budget', ...out };
+      state.next = { stage: s, round: roundOf(state, s), reason: 'budget', ...out, ...keptFeedback(state) };
     }
     save(o.state, state);
     return { code: ok ? 0 : 3, out };
@@ -146,7 +149,7 @@ const commands = {
     const overCeiling = ceiling !== null && spent >= ceiling;
     if (overCeiling && state.status === 'running') {
       state.status = 'stopped_budget';
-      state.next = { stage: s, round: roundOf(state, s), reason: 'over_ceiling', bookedLeg: o.leg };
+      state.next = { stage: s, round: roundOf(state, s), reason: 'over_ceiling', bookedLeg: o.leg, ...keptFeedback(state) };
     }
     save(o.state, state);
     return { code: overCeiling ? 3 : 0, out: { bookedUsd: toUsd(micros), spentUsd: toUsd(spent), overCeiling } };
@@ -167,7 +170,7 @@ const commands = {
     else if (STAGES.indexOf(s) < STAGES.indexOf(policy.to)) reason = 'stage_before_target';
     else if (lastWork && lastWork.signature === signature) reason = 'no_progress';
     else if (used >= policy.max) reason = 'retries_exhausted';
-    state.failures.push({ stage: s, round: roundOf(state, s), kind: o.kind, signature, decision: reason ?? 'retry' });
+    state.failures.push({ stage: s, round: roundOf(state, s), kind: o.kind, signature, feedback: o.feedback ?? null, decision: reason ?? 'retry' });
     if (reason) {
       state.status = reason === 'no_progress' || reason === 'retries_exhausted' ? 'stopped_retry' : 'stopped_terminal';
       state.next = { stage: s, round: roundOf(state, s), reason };
