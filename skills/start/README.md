@@ -21,7 +21,9 @@
 | **First use** | asks once for conductor, worker and reviewer models (from the CLIs it finds) and a default strategy, saved in your roster file; `@start setup` asks again |
 | **Strategies** | solo, fan-out (parallel workers), consensus (three models, two rounds, then the conductor decides), review (an existing PR by risk tier) |
 | **First output** | four one-line answers and your prompt rewritten, before any tool call (the team setup comes right after) |
-| **Stops for you** | the setup and clarify answers, a cost gate, and approval to commit or push |
+| **Retry** | `--retry implement:2` (default): a failed gate or review goes back to the named stage with the failure attached, at most N times; a hook block, an environment problem or the same failure twice stops instead |
+| **Budget** | `--budget <USD>`: one ceiling for the conductor, workers, reviewers, subagents and retries, checked before each stage; a refusal stops and leaves a resumable state file |
+| **Stops for you** | the setup and clarify answers, a cost gate, a budget or retry stop, and approval to commit or push |
 | **Never** | builds a parallel fix when someone else's branch or PR already covers the ticket, or routes around a blocking hook |
 
 ## Why
@@ -76,4 +78,5 @@ Install the skills it composes the same way, add an alias to your `CLAUDE.md` so
 | File | For |
 | --- | --- |
 | [`SKILL.md`](SKILL.md) | the agent: team setup, strategies, the six stages and the fast path |
+| [`scripts/run-state.mjs`](scripts/run-state.mjs) | the retry and budget bookkeeping: `init`, `check`, `book`, `fail`, `resume`, `done`, `status` on one JSON state file (Node, no dependencies) |
 | `README.md` | you |
