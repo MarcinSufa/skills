@@ -223,6 +223,7 @@ test('book --unpriced refuses a zero estimate under a ceiling', () => {
   s.run('check', '--stage', 'verify', '--estimate', '0');
   assert.equal(s.run('book', '--stage', 'verify', '--leg', 'codex', '--unpriced').code, 2);
   assert.equal(s.run('book', '--stage', 'verify', '--leg', 'codex', '--unpriced', '--estimate', '0').code, 2);
+  assert.equal(s.run('book', '--stage', 'verify', '--leg', 'codex', '--unpriced', '--estimate', '0.0000001').code, 2, 'an estimate that rounds to 0 is zero');
   assert.equal(s.run('book', '--stage', 'verify', '--leg', 'codex', '--unpriced', '--estimate', '0.2').code, 0);
 });
 

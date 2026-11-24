@@ -160,8 +160,8 @@ const commands = {
     else {
       const est = o.estimate !== undefined ? usd(o.estimate, '--estimate') : state.lastEstimate[s];
       // Without a ceiling nothing is guarded by the estimate, so a leg of unknown cost is booked at 0 and counted.
-      if (!(est > 0) && state.policy.ceilingUsd !== null) fail('--unpriced needs an estimate above 0 under a ceiling (--estimate, or an earlier check of this stage)');
       micros = toMicros(est ?? 0);
+      if (!(micros > 0) && state.policy.ceilingUsd !== null) fail('--unpriced needs an estimate above 0 under a ceiling (--estimate, or an earlier check of this stage)');
     }
     state.spent.push({ stage: s, round: roundOf(state, s), leg: o.leg, ...(session ? { session } : {}), usd: toUsd(micros), unpriced: o.unpriced === true });
     const spent = spentMicros(state);
